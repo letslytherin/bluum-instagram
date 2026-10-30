@@ -3,6 +3,8 @@
 Material de marketing da **Bluum**, loja de make, cosméticos e acessórios na Estrada de Águas Compridas, 392, em Olinda-PE (@lojabluum). **A inauguração é no sábado, 7 de novembro.**
 
 ## Por onde começar
+**Site do time (mais fácil):** https://letslytherin.github.io/bluum-instagram/ tem a ordem dos posts, as prévias, o download e a legenda com botão de copiar.
+
 | Para… | Abra |
 |---|---|
 | Saber **o que postar, quando, com qual arquivo e qual legenda** | [GUIA-DE-POSTAGEM.md](GUIA-DE-POSTAGEM.md) |
