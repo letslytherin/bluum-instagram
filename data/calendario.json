@@ -1,0 +1,220 @@
+{
+  "campanha": "Algo está florescendo em Olinda",
+  "hashtag": "#BluumFloresce",
+  "inauguracao": null,
+  "nota": "Posts com 'rel' (dias em relação à inauguração) só ganham data quando 'inauguracao' for definida no painel.",
+  "posts": [
+    {
+      "id": "p01", "date": "2026-10-22", "hora": "19:00", "formato": "reels", "pilar": "lancamento", "fase": 1,
+      "titulo": "Vem aí: a Bluum", "status": "pronto",
+      "objetivo": "Apresentar a marca e fixar no topo do perfil.",
+      "gancho": "Inauguração em breve · produtos a partir de R$ 4,99",
+      "roteiro": ["Usar o vídeo pronto: motion/out/bluum-meta-9x16.mp4", "Capa: frame do logo (por volta de 14s)", "Marcar localização: Olinda, PE", "Depois de postar: Fixar no perfil (1º fixado)"],
+      "legenda": "Algo está florescendo em Olinda 🪷\n\nMake, cosméticos e acessórios a partir de R$ 4,99, pertinho de você, na Estrada de Águas Compridas.\n\nInauguração em breve. Ativa o 🔔 pra não perder a data!",
+      "hashtags": "#BluumFloresce #olinda #recife #maquiagem #achadinhos",
+      "precisa": []
+    },
+    {
+      "id": "p02", "date": "2026-10-23", "hora": "12:00", "formato": "carrossel", "pilar": "lancamento", "fase": 1,
+      "titulo": "O que é a Bluum? (5 slides)", "status": "planejado",
+      "objetivo": "Explicar a loja em 10 segundos e gerar salvamentos. 2º fixado.",
+      "gancho": "Slide 1: \"Uma loja nova vai abrir em Olinda. E ela tem um segredo no nome 🪷\"",
+      "roteiro": ["Slide 1: gancho sobre fundo turquesa com o lótus dourado", "Slide 2: \"Bluum vem de bloom: florescer\"", "Slide 3: \"A flor de lótus nasce na água e floresce linda. Beleza é pra todo mundo.\"", "Slide 4: \"Make · Cosméticos · Acessórios, a partir de R$ 4,99\"", "Slide 5: \"Estrada de Águas Compridas, 392 · Inauguração em breve · Ativa o 🔔\"", "Fixar no perfil (2º fixado)"],
+      "legenda": "Você sabia que o nome Bluum tem significado? 🪷\nArrasta pro lado e descobre ➡️\n\nSalva esse post pra lembrar da gente quando a data chegar!",
+      "hashtags": "#BluumFloresce #olindape #lojademaquiagem #recife",
+      "precisa": []
+    },
+    {
+      "id": "p03", "date": "2026-10-24", "hora": "10:00", "formato": "stories", "pilar": "interacao", "fase": 1,
+      "titulo": "Enquete: o que você mais quer encontrar?", "status": "planejado",
+      "objetivo": "Fazer o público participar e descobrir o que ele quer.",
+      "gancho": "\"Me ajuda a montar a loja? 👀\"",
+      "roteiro": ["Tela 1: foto de caixas/prateleira desfocada + \"Me ajuda a montar a loja?\"", "Tela 2: Enquete \"O que você mais quer?\" Make / Skincare", "Tela 3: Enquete \"Acessórios: brincos ou presilhas?\"", "Tela 4: Caixinha de perguntas \"Que produto não pode faltar na Bluum?\"", "Salvar tudo no destaque \"Bastidores\""],
+      "legenda": "", "hashtags": "", "precisa": []
+    },
+    {
+      "id": "p04", "date": "2026-10-25", "hora": "19:30", "formato": "reels", "pilar": "bastidores", "fase": 1,
+      "titulo": "Abrindo as primeiras caixas", "status": "planejado",
+      "objetivo": "Curiosidade: mostrar sem revelar tudo.",
+      "gancho": "\"Chegaram as primeiras caixas da Bluum… 📦\"",
+      "roteiro": ["Gravar na vertical, perto da janela (luz natural)", "Plano 1 (2s): pilha de caixas fechadas", "Plano 2 (3s): mão abrindo a fita com estilete", "Plano 3 (3s): close de um produto saindo da caixa, só a embalagem, sem marca visível", "Plano 4 (2s): balançar a cabeça \"não posso mostrar ainda\"", "Texto final: \"Quer ver o que tem dentro? Segue 🪷\"", "Áudio: um em alta na aba de áudios do Reels"],
+      "legenda": "Não aguentei e abri 🙈 Mas ainda não posso mostrar tudo…\nO que você acha que veio aqui dentro? Chuta nos comentários 👇",
+      "hashtags": "#BluumFloresce #olinda #bastidores #lojanova",
+      "precisa": ["Caixas de produto já na loja"]
+    },
+    {
+      "id": "p05", "date": "2026-10-27", "hora": "19:00", "formato": "reels", "pilar": "achadinhos", "fase": 1,
+      "titulo": "Adivinhe o preço", "status": "planejado",
+      "objetivo": "Gancho forte de preço e muitos comentários.",
+      "gancho": "\"Quanto você acha que custa esse?\"",
+      "roteiro": ["3 produtos, um por vez, segurando na mão contra fundo neutro", "Para cada um: mostrar 2s → texto \"Quanto custa?\" → corte → preço real na tela com som de \"ding\"", "Último: o de R$ 4,99 (o mais surpreendente)", "Final: \"Tudo isso vai estar na Bluum, em Olinda 🪷\""],
+      "legenda": "Acertou algum? 😱 Comenta quanto você chutou!\nE tem muito mais a partir de R$ 4,99… inauguração em breve 🪷",
+      "hashtags": "#BluumFloresce #achadinhos #maquiagembarata #olinda",
+      "precisa": ["Preços reais de 3 produtos"]
+    },
+    {
+      "id": "p06", "date": "2026-10-28", "hora": "12:00", "formato": "carrossel", "pilar": "olinda", "fase": 1,
+      "titulo": "Onde fica a Bluum", "status": "planejado",
+      "objetivo": "Mostrar onde fica a loja. 3º fixado.",
+      "gancho": "Slide 1: \"Sabe a Estrada de Águas Compridas? Então…\"",
+      "roteiro": ["Slide 1: foto da rua/fachada (sem revelar o interior)", "Slide 2: print do mapa com pin dourado", "Slide 3: pontos de referência perto (preencher)", "Slide 4: \"Estrada de Águas Compridas, 392 · Olinda-PE\"", "Fixar no perfil (3º fixado) + destaque \"Onde fica\""],
+      "legenda": "📍 Estrada de Águas Compridas, 392, Olinda-PE\nMarca aqui quem mora pertinho e vai com você na inauguração 👯‍♀️",
+      "hashtags": "#BluumFloresce #aguascompridas #olindape #olinda",
+      "precisa": ["Foto da fachada", "Ponto de referência"]
+    },
+    {
+      "id": "p07", "date": "2026-10-29", "hora": "19:00", "formato": "reels", "pilar": "achadinhos", "fase": 2,
+      "titulo": "3 achadinhos até R$ 10", "status": "planejado",
+      "objetivo": "Mostrar preço e produto, com motivo para salvar e enviar.",
+      "gancho": "\"3 achadinhos de make até R$ 10 que vão ter na Bluum\"",
+      "roteiro": ["Plano de abertura: os 3 produtos lado a lado + texto do gancho", "Um corte por produto (3s cada): nome + preço real + 1 frase do que faz", "Swatch rápido no braço/mão quando for make", "Final: \"Qual você levaria? 1, 2 ou 3?\""],
+      "legenda": "Qual você levaria: 1, 2 ou 3? 👇\nManda pra amiga que vive procurando achadinho 💸",
+      "hashtags": "#BluumFloresce #achadinhos #maquiagembarata #recife",
+      "precisa": ["3 produtos até R$ 10 com preço confirmado"]
+    },
+    {
+      "id": "p08", "date": "2026-10-30", "hora": "11:00", "formato": "stories", "pilar": "interacao", "fase": 2,
+      "titulo": "Abrir a Lista VIP", "status": "planejado",
+      "objetivo": "Começar a Lista VIP (métrica norte).",
+      "gancho": "\"Quer saber a data da inauguração ANTES de todo mundo?\"",
+      "roteiro": ["Tela 1: \"Quer saber a data antes de todo mundo? 🪷\"", "Tela 2: \"Manda EU QUERO no Direct\" + figurinha de link para o Direct", "Tela 3: \"Quem entrar na Lista VIP fica sabendo primeiro\"", "Criar o Canal de Transmissão \"Bluum VIP 🪷\" e convidar quem respondeu", "Registrar no painel quantos pediram (Resultados → Lista VIP)"],
+      "legenda": "", "hashtags": "", "precisa": []
+    },
+    {
+      "id": "p09", "date": "2026-11-01", "hora": "19:30", "formato": "reels", "pilar": "bastidores", "fase": 2,
+      "titulo": "Montando a loja (timelapse)", "status": "planejado",
+      "objetivo": "Mostrar que a loja está ficando pronta.",
+      "gancho": "\"De loja vazia a… 👀\"",
+      "roteiro": ["Celular fixo no mesmo lugar (apoiado em prateleira) por 1 a 2h de montagem", "Gravar em Timelapse (câmera do celular)", "Acelerar para 8 a 10s", "Terminar ANTES de mostrar tudo pronto: tela preta + \"continua…\""],
+      "legenda": "Tá ficando do jeitinho que a gente sonhou 🥹🪷\nFalta pouco…",
+      "hashtags": "#BluumFloresce #bastidores #lojanova #olinda",
+      "precisa": ["Dia de montagem das prateleiras"]
+    },
+    {
+      "id": "p10", "date": "2026-11-03", "hora": "12:00", "formato": "carrossel", "pilar": "beleza", "fase": 2,
+      "titulo": "Skincare básico em 3 passos", "status": "planejado",
+      "objetivo": "Conteúdo útil para salvar (sem promessa de efeito).",
+      "gancho": "Slide 1: \"Skincare não precisa ter 10 passos\"",
+      "roteiro": ["Slide 1: gancho", "Slide 2: Passo 1: limpar (sabonete facial)", "Slide 3: Passo 2: hidratar (hidratante)", "Slide 4: Passo 3: proteger (protetor solar de dia)", "Slide 5: \"Tem tudo isso na Bluum 🪷 Salva pra lembrar\"", "Usar só o que está no rótulo, sem prometer resultado"],
+      "legenda": "Salva pra montar sua rotina 🧴✨\nQual desses passos você sempre esquece? 👇",
+      "hashtags": "#BluumFloresce #skincare #skincarebarato #olinda",
+      "precisa": ["Confirmar que a loja terá esses itens"]
+    },
+    {
+      "id": "p11", "date": "2026-11-04", "hora": "19:00", "formato": "reels", "pilar": "beleza", "fase": 2,
+      "titulo": "Make de 5 minutos só com produtos da Bluum", "status": "planejado",
+      "objetivo": "Mostrar os produtos em uso. Formato com alto compartilhamento.",
+      "gancho": "\"Make completa em 5 minutos com produtos de até R$ X\"",
+      "roteiro": ["Pessoa da equipe ou amiga (com autorização de imagem)", "Começar já com o rosto pela metade pronto (gancho visual)", "Cortes rápidos: base → blush → máscara → batom", "Mostrar o preço de cada produto na tela", "Final: rosto pronto + \"tudo na Bluum 🪷\""],
+      "legenda": "5 minutos e pronta 💄 E gastando pouquinho!\nQuer o tutorial completo? Comenta EU QUERO",
+      "hashtags": "#BluumFloresce #makerapida #maquiagem #recife",
+      "precisa": ["Modelo com autorização de imagem", "Preços dos itens"]
+    },
+    {
+      "id": "p12", "date": "2026-11-05", "hora": "12:00", "formato": "stories", "pilar": "olinda", "fase": 2,
+      "titulo": "Convidar parceiras locais", "status": "planejado",
+      "objetivo": "Fechar 3 a 5 microinfluenciadoras de Olinda e Recife para posts Collab.",
+      "gancho": "-",
+      "roteiro": ["Listar 10 perfis locais de beleza/lifestyle (2 mil a 30 mil seguidores) que já falam de Olinda/Recife", "Mandar a mensagem modelo (veja .claude/agents/parcerias-locais.md)", "Oferecer: kit de produtos e/ou permuta. Se houver pagamento, o post leva #publi", "Combinar: 1 Reel Collab na fase 3 + presença no dia D"],
+      "legenda": "", "hashtags": "", "precisa": ["Orçamento/kit para parcerias (Leticia decide)"]
+    },
+    {
+      "id": "p13", "date": "2026-11-07", "hora": "19:30", "formato": "reels", "pilar": "olinda", "fase": 2,
+      "titulo": "POV: descobrindo a loja nova do bairro", "status": "planejado",
+      "objetivo": "Orgulho local, para compartilharem com quem é do bairro.",
+      "gancho": "\"POV: você descobre que vai abrir uma loja de make a 5 minutos da sua casa\"",
+      "roteiro": ["Plano 1: caminhando na Estrada de Águas Compridas (rosto fora de quadro)", "Plano 2: parar em frente à fachada com tapume/vitrine coberta", "Plano 3: espiar pela fresta, reação de surpresa", "Texto: \"Olinda vai florescer 🪷\""],
+      "legenda": "Quem é de Águas Compridas levanta a mão 🙋‍♀️\nManda pra vizinha!",
+      "hashtags": "#BluumFloresce #aguascompridas #olinda #olindape",
+      "precisa": []
+    },
+    {
+      "id": "p14", "date": "2026-11-10", "hora": "19:00", "formato": "reels", "pilar": "achadinhos", "fase": 2,
+      "titulo": "O que R$ 20 compra na Bluum", "status": "planejado",
+      "objetivo": "Reforçar a promessa de preço com prova visual.",
+      "gancho": "\"Fui ver o que dá pra levar com R$ 20 na Bluum\"",
+      "roteiro": ["Nota de R$ 20 na mão (abertura)", "Ir pegando produtos da prateleira, com o valor somando na tela", "Final: cestinha cheia + total real"],
+      "legenda": "R$ 20 e olha tudo isso 😱🛍️\nQual você tiraria da cesta?",
+      "hashtags": "#BluumFloresce #achadinhos #compras #recife",
+      "precisa": ["Preços reais dos itens", "Loja com prateleiras montadas"]
+    },
+    {
+      "id": "p15", "rel": -14, "hora": "19:00", "formato": "reels", "pilar": "lancamento", "fase": 3,
+      "titulo": "ANÚNCIO DA DATA", "status": "planejado",
+      "objetivo": "O post mais importante: revelar a data.",
+      "gancho": "\"A Bluum tem data pra abrir… 🪷\"",
+      "roteiro": ["Mandar a data PRIMEIRO no Canal Bluum VIP (1h antes)", "Reel: lótus abrindo + data grande em dourado (dá pra gerar no motion/)", "Fixar no perfil no lugar do \"Vem aí\"", "Stories repostando + figurinha de \"Lembrete de evento\""],
+      "legenda": "É OFICIAL 🪷 A Bluum abre as portas dia [DATA]!\n📍 Estrada de Águas Compridas, 392, Olinda\nMarca quem vai com você 👯‍♀️",
+      "hashtags": "#BluumFloresce #inauguracao #olinda #recife",
+      "precisa": ["Data da inauguração"]
+    },
+    {
+      "id": "p16", "rel": -10, "hora": "19:00", "formato": "reels", "pilar": "olinda", "fase": 3,
+      "titulo": "Collab com parceira local #1", "status": "planejado",
+      "objetivo": "Alcance no público da parceira.",
+      "gancho": "Definido com a parceira",
+      "roteiro": ["Parceira grava na loja (tour rápido ou make com produtos)", "Publicar como Collab (convite de colaboração)", "Se pago: #publi na legenda"],
+      "legenda": "", "hashtags": "#BluumFloresce", "precisa": ["Parceira confirmada"]
+    },
+    {
+      "id": "p17", "rel": -7, "hora": "19:00", "formato": "reels", "pilar": "lancamento", "fase": 3,
+      "titulo": "Faltam 7 dias", "status": "planejado",
+      "objetivo": "Contagem regressiva.",
+      "gancho": "\"7 dias.\"",
+      "roteiro": ["Tour rápido da loja quase pronta (10s)", "Número 7 grande na tela", "CTA: ativar lembrete"],
+      "legenda": "Faltam 7 dias 🪷 Já ativou o lembrete?",
+      "hashtags": "#BluumFloresce #inauguracao #olinda", "precisa": ["Data da inauguração"]
+    },
+    {
+      "id": "p18", "rel": -3, "hora": "12:00", "formato": "carrossel", "pilar": "lancamento", "fase": 3,
+      "titulo": "Guia do dia da inauguração", "status": "planejado",
+      "objetivo": "Tirar dúvidas: horário, pagamento, como chegar.",
+      "gancho": "Slide 1: \"Tudo que você precisa saber pro dia [DATA]\"",
+      "roteiro": ["Horário de funcionamento", "Formas de pagamento", "Como chegar + referência", "Brinde/surpresa SÓ se a loja decidir dar de verdade"],
+      "legenda": "Salva pra não esquecer 📌",
+      "hashtags": "#BluumFloresce #inauguracao #olinda", "precisa": ["Data", "Horário", "Formas de pagamento"]
+    },
+    {
+      "id": "p19", "rel": -1, "hora": "19:00", "formato": "stories", "pilar": "lancamento", "fase": 3,
+      "titulo": "É amanhã!", "status": "planejado",
+      "objetivo": "Último lembrete.",
+      "gancho": "\"AMANHÃ 🪷\"",
+      "roteiro": ["Stories da loja pronta, com luz acesa", "Figurinha de contagem regressiva", "Mensagem no Canal VIP"],
+      "legenda": "", "hashtags": "", "precisa": ["Data da inauguração"]
+    },
+    {
+      "id": "p20", "rel": 0, "hora": "09:00", "formato": "stories", "pilar": "lancamento", "fase": 4,
+      "titulo": "DIA D: inauguração ao vivo", "status": "planejado",
+      "objetivo": "Mostrar o movimento e trazer quem ainda não foi.",
+      "gancho": "\"ABRIMOS! 🪷\"",
+      "roteiro": ["Stories de hora em hora: porta abrindo, primeiras clientes (com autorização), produtos", "Live curta (10 a 15 min) no pico de movimento", "Repostar quem marcar a @lojabluum", "Reel do dia à noite (p21)"],
+      "legenda": "", "hashtags": "", "precisa": ["Data da inauguração", "Pessoa responsável pelo celular no dia"]
+    },
+    {
+      "id": "p21", "rel": 0, "hora": "20:00", "formato": "reels", "pilar": "lancamento", "fase": 4,
+      "titulo": "Reel do dia da inauguração", "status": "planejado",
+      "objetivo": "Registro emocional e prova real de movimento.",
+      "gancho": "\"Hoje a Bluum floresceu 🪷\"",
+      "roteiro": ["Juntar os melhores clipes do dia (15 a 20s)", "Só pessoas que autorizaram"],
+      "legenda": "Obrigada, Olinda 🥹🪷 Hoje a Bluum floresceu.",
+      "hashtags": "#BluumFloresce #inauguracao #olinda", "precisa": ["Data da inauguração"]
+    },
+    {
+      "id": "p22", "rel": 3, "hora": "19:00", "formato": "reels", "pilar": "achadinhos", "fase": 5,
+      "titulo": "Os mais procurados da semana", "status": "planejado",
+      "objetivo": "Usar o dado real de venda como conteúdo.",
+      "gancho": "\"Os 3 produtos que mais saíram na primeira semana\"",
+      "roteiro": ["Só os itens que de fato mais venderam (conferir no caixa)", "Preço de cada um na tela"],
+      "legenda": "Já garantiu o seu? 👀", "hashtags": "#BluumFloresce #achadinhos #olinda", "precisa": ["Dados de venda da 1ª semana"]
+    }
+  ],
+  "ideias": [
+    {"id": "i01", "formato": "reels", "pilar": "interacao", "titulo": "Você escolhe a vitrine", "gancho": "Enquete com 2 opções de vitrine. A mais votada vai pra rua."},
+    {"id": "i02", "formato": "reels", "pilar": "bastidores", "titulo": "Por que lótus?", "gancho": "A história por trás do símbolo da Bluum."},
+    {"id": "i03", "formato": "carrossel", "pilar": "beleza", "titulo": "Kit presente até R$ 30", "gancho": "Ideias de presente bonito gastando pouco."},
+    {"id": "i04", "formato": "reels", "pilar": "achadinhos", "titulo": "Dupe barato de produto famoso", "gancho": "Só comparar cor/textura, sem citar resultado que não dá para provar."},
+    {"id": "i05", "formato": "stories", "pilar": "interacao", "titulo": "Quiz: qual acessório combina com você?", "gancho": "Figurinha de quiz com 3 estilos."},
+    {"id": "i06", "formato": "reels", "pilar": "olinda", "titulo": "Arrume-se comigo pro Carnaval de Olinda", "gancho": "Para janeiro/fevereiro: make de carnaval com produtos da loja."},
+    {"id": "i07", "formato": "reels", "pilar": "bastidores", "titulo": "Um dia na Bluum antes de abrir", "gancho": "Vlog curto da rotina de montagem."}
+  ]
+}

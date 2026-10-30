@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum posts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:wght@600&family=Montserrat:wght@500;600&display=block" rel="stylesheet">
+<link href="brand.css" rel="stylesheet">
+<style>
+  #stage { width: 1080px; height: 1350px; }
+  #content { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 0 110px; }
+  #content.c { align-items: center; text-align: center; }
+  #content.l { align-items: flex-start; text-align: left; }
+  .story #content { padding-top: 270px; padding-bottom: 340px; }
+  .lh { line-height: 1.12; }
+  .sp { flex: none; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="content"></div></div>
+<script src="brand.js"></script>
+<script>
+// Regras em ../DESIGN.md. Uma ideia por tela, um elemento em ouro, frases retas, sem selos nem "arrasta".
+const ADDR = 'Estrada de Águas Compridas, 392 · Olinda';
+const WPP = 'WhatsApp (81) 9.9405-4753';
+const LOTUS = w => `<img src="{{lotus}}" style="width:${w}px;filter:drop-shadow(0 6px 10px rgba(0,70,64,.22))">`;
+const WORD = w => `<img src="{{word}}" style="width:${w}px;filter:drop-shadow(0 6px 10px rgba(0,70,64,.22))">`;
+const FULL = w => `<img src="assets/logo.jpg" style="width:${w}px">`;
+const SP = h => `<div class="sp" style="height:${h}px"></div>`;
+const t = (txt, cls, size, extra = '') => `<div class="${cls}" style="font-size:${size}px;${extra}">${txt}</div>`;
+const GOLD_N = (txt, size) => t(txt, 'cinzel gold', size, 'line-height:1.15;padding:0 10px');
+
+function countdownStory(first, big, last) {
+  return { size: 'story', align: 'c', html: [
+    LOTUS(240), SP(40),
+    t(first, 'corm ink', 110),
+    GOLD_N(big, big.length > 2 ? 230 : 440),
+    last ? t(last, 'corm ink', 110) : '',
+    SP(260),
+    t('Sábado, 7 de novembro', 'mont ink', 40, 'font-weight:600'),
+    t(ADDR, 'mont ink', 34),
+  ].join('') };
+}
+function cover(inner) { return { size: 'story', align: 'c', html: inner }; }
+
+const SLIDES = {
+  // Post do manifesto (30/10, fixado). A legenda é o texto do Guilherme.
+  'post-manifesto': { size: 'feed', align: 'c', html: [
+    FULL(1000), SP(30),
+    t('Inauguração · sábado, 7 de novembro', 'corm ink', 50),
+    t(ADDR, 'mont ink', 28),
+  ].join('') },
+
+  // Carrossel "O que é a Bluum" (na voz do manifesto)
+  'carrossel-o-que-e-1': { size: 'feed', align: 'l', html: [
+    LOTUS(220), SP(40),
+    t('Antes de florescer, toda flor guarda um segredo.', 'corm ink lh', 96),
+  ].join('') },
+  'carrossel-o-que-e-2': { size: 'feed', align: 'l', html: [
+    t('Bluum vem de bloom.', 'corm ink lh', 110),
+    t('Em inglês: florescer, desabrochar, prosperar.', 'corm ink lh', 62, 'opacity:.85'),
+  ].join('') },
+  'carrossel-o-que-e-3': { size: 'feed', align: 'l', html: [
+    t('A beleza já existe em você. Às vezes só precisa de um cuidado, um detalhe, um momento seu, pra desabrochar.', 'corm ink lh', 74),
+  ].join('') },
+  'carrossel-o-que-e-4': { size: 'feed', align: 'l', html: [
+    t('Make<br>Cosméticos<br>Acessórios', 'cinzel ink', 96, 'line-height:1.25'),
+    SP(10), t('a partir de', 'mont ink', 40),
+    GOLD_N('R$ 4,99', 150),
+  ].join('') },
+  'carrossel-o-que-e-5': { size: 'feed', align: 'c', html: [
+    WORD(760), SP(10),
+    GOLD_N('07/11', 220),
+    t('Sábado, a Bluum abre as portas em Olinda.', 'corm ink', 64),
+    `<div class="fio" style="width:360px"></div>`,
+    t(ADDR, 'mont ink', 30),
+    t(`@lojabluum · ${WPP}`, 'mont ink', 30),
+  ].join('') },
+
+  // Carrossel "Onde fica" (03/11)
+  'carrossel-onde-fica-1': { size: 'feed', align: 'l', html: [
+    t('Sabe a Estrada de Águas Compridas, em Olinda?', 'corm ink lh', 108),
+  ].join('') },
+  'carrossel-onde-fica-2': { size: 'feed', align: 'l', html: [
+    t('Estrada de<br>Águas Compridas,', 'cinzel ink', 80, 'line-height:1.2'),
+    GOLD_N('392', 200),
+    t('Olinda · PE', 'mont ink', 36, 'font-weight:600'),
+    `<div class="fio" style="width:300px"></div>`,
+    t(WPP, 'mont ink', 32),
+  ].join('') },
+  'carrossel-onde-fica-3': { size: 'feed', align: 'c', html: [
+    LOTUS(200), SP(10),
+    GOLD_N('07/11', 230),
+    t('Sábado, a gente abre as portas.', 'corm ink', 70),
+    t('Marca quem vai com você.', 'corm ink', 70),
+    SP(10), t('@lojabluum', 'mont ink', 34, 'font-weight:600'),
+  ].join('') },
+
+  // Stories
+  'story-data': { size: 'story', align: 'c', html: [
+    LOTUS(300), SP(40),
+    t('A Bluum abre as portas', 'corm ink', 92),
+    GOLD_N('07/11', 300),
+    t('sábado · ' + ADDR, 'mont ink', 34),
+  ].join('') },
+  'story-vip': { size: 'story', align: 'l', html: [
+    t('Quer que a gente te lembre no dia?', 'corm ink lh', 100),
+    t('Manda EU QUERO no Direct.', 'corm ink lh', 100),
+    SP(420),
+  ].join('') },
+  'story-enquete': { size: 'story', align: 'l', html: [
+    t('Me ajuda a montar a loja?', 'corm ink lh', 112),
+    SP(460),
+  ].join('') },
+  'story-faltam-7': countdownStory('Faltam', '7', 'dias'),
+  'story-faltam-3': countdownStory('Faltam', '3', 'dias'),
+  'story-amanha': countdownStory('É amanhã', '07/11', ''),
+  'story-hoje': countdownStory('É hoje', '07/11', ''),
+
+  // Capas dos destaques (o Instagram recorta um círculo no centro)
+  'capa-bastidores': cover(iconSvg('caixa', 460)),
+  'capa-achadinhos': cover(iconSvg('etiqueta', 440)),
+  'capa-onde-fica': cover(iconSvg('pin', 440)),
+  'capa-vip': cover(LOTUS(520)),
+};
+
+let LOGO = null;
+async function show(id) {
+  const S = SLIDES[id];
+  const story = S.size === 'story';
+  const W = 1080, H = story ? 1920 : 1350;
+  document.body.className = story ? 'story' : '';
+  const stage = document.getElementById('stage');
+  stage.style.width = W + 'px'; stage.style.height = H + 'px';
+  document.documentElement.style.width = document.body.style.width = W + 'px';
+  document.documentElement.style.height = document.body.style.height = H + 'px';
+  const c = document.getElementById('content');
+  c.className = S.align || 'c';
+  c.innerHTML = S.html.replaceAll('{{lotus}}', LOGO.lotus.url).replaceAll('{{word}}', LOGO.word.url);
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  return { width: W, height: H };
+}
+
+window.SLIDE_IDS = Object.keys(SLIDES);
+window.show = show;
+window.ready = (async () => {
+  await Promise.all([document.fonts.load('700 100px Cinzel'), document.fonts.load('600 100px "Cormorant Garamond"'),
+                     document.fonts.load('500 40px Montserrat'), document.fonts.load('600 40px Montserrat')]);
+  document.body.insertAdjacentHTML('afterbegin', GOLD_DEFS);
+  LOGO = await keyLogo();
+  return true;
+})();
+</script>
+</body>
+</html>

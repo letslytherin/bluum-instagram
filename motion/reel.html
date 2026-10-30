@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Cormorant+Garamond:wght@600&family=Montserrat:wght@500;600&display=block" rel="stylesheet">
+<link href="brand.css" rel="stylesheet">
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  #cam { position: absolute; inset: 0; transform-origin: 50% 45%; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="cam"></div></div>
+<script src="brand.js"></script>
+<script>
+// ?v=<variante>. Regras em ../DESIGN.md: fundo liso, um elemento em ouro por peça, entradas
+// curtas sem mola, zoom lento no quadro, texto na área segura (y 270–1250).
+const ADDR = 'Estrada de Águas Compridas, 392 · Olinda';
+const T = (html, cls, size, y, at, out, extra = {}) => ({ html, cls, style: `font-size:${size}px`, y, at, out, ...extra });
+const L = (html, cls, size, y, at, out) => T(html, cls + ' left', size, y, at, out, { width: 820 });
+
+function countdown(big, firstWord, lastWord, line, words = 3) {
+  return {
+    dur: 9,
+    els: [
+      { type: 'lotus', width: 250, y: 360, anim: 'fade', at: 0 },
+      T(firstWord, 'corm ink', 110, 640, 0.2, 3.9),
+      T(big, 'cinzel gold', big.length > 2 ? 210 : 440, big.length > 2 ? 860 : 880, 0.45, 3.9, { lh: 1.15 }),
+      lastWord ? T(lastWord, 'corm ink', 110, 1130, 0.7, 3.9) : null,
+      L(line, 'corm ink', 84, 700, 4.2),
+      L(ADDR, 'mont ink', 36, 930, 4.9),
+      L('@lojabluum', 'mont ink', 40, 990, 5.2, null),
+    ].filter(Boolean),
+    audio: { dur: 9, booms: [[0.15, 0.3], [4.1, 0.2]], chimes: [[84, 0.45, 0.08], [81, 4.2, 0.06]], whooshes: [3.85], riser: null, drums: [[1.25, 8.1]], quietBar: -1 },
+  };
+}
+
+const VARIANTS = {
+  // Anúncio da data (também é o criativo do Meta Ads)
+  data: {
+    dur: 13,
+    els: [
+      { type: 'lotus', width: 420, y: 600, anim: 'fade', at: 0.1, out: 4.0 },
+      L('Antes de florescer, toda flor guarda um segredo.', 'corm ink', 78, 1010, 0.5, 4.0),
+      T('A Bluum abre as portas', 'corm ink', 92, 640, 4.4, 8.6),
+      T('07/11', 'cinzel gold', 260, 860, 4.8, 8.6, { lh: 1.15 }),
+      T('sábado, 7 de novembro', 'mont ink', 44, 1060, 5.2, 8.6),
+      { type: 'word', width: 860, y: 560, anim: 'wipe', at: 8.9, dur: 0.9 },
+      { type: 'tag', width: 760, y: 690, anim: 'fade', at: 9.4 },
+      { html: '', cls: 'fio', style: 'width:420px', y: 790, anim: 'fade', at: 9.7 },
+      T(ADDR, 'mont ink', 38, 860, 9.9),
+      T('Siga @lojabluum', 'corm ink', 72, 975, 10.3),
+    ],
+    audio: { dur: 13, booms: [[0.1, 0.25], [4.4, 0.35], [8.9, 0.3]], chimes: [[84, 0.4, 0.08], [77, 4.8, 0.1], [84, 4.85, 0.06], [81, 9.0, 0.07]],
+             whooshes: [4.1, 8.7], riser: null, drums: [[4.375, 12.4]], quietBar: -1 },
+  },
+
+  // A história do símbolo
+  lotus: {
+    dur: 15,
+    els: [
+      T('Por que uma flor de lótus?', 'corm ink', 96, 860, 0.2, 3.0),
+      L('Ela nasce no fundo das águas…', 'corm ink', 92, 860, 3.4, 6.4),
+      L('…e sobe até a luz pra florescer.', 'corm ink', 92, 860, 6.8, 9.8),
+      { type: 'lotus', width: 440, y: 560, anim: 'rise', at: 10.0, dur: 0.8 },
+      { type: 'word', width: 860, y: 880, anim: 'wipe', at: 10.5, dur: 0.9 },
+      T('Bluum vem de bloom: florescer.', 'corm ink', 64, 1020, 11.3),
+      T('Sábado, 7 de novembro · Olinda', 'mont ink', 38, 1110, 11.9),
+      T('@lojabluum', 'mont ink', 40, 1175, 12.3, null, { weight: 600 }),
+    ],
+    audio: { dur: 15, booms: [[0.1, 0.2], [10.0, 0.4]], chimes: [[84, 0.3, 0.06], [77, 10.0, 0.1], [84, 10.05, 0.07], [81, 11.3, 0.05]],
+             whooshes: [3.1, 6.5], riser: [8.8, 10.0], drums: [[3.125, 7.5], [11.25, 14.4]], quietBar: 3 },
+  },
+
+  // Para ganhar seguidores
+  siga: {
+    dur: 13,
+    els: [
+      T('Make, cosméticos e acessórios', 'corm ink', 84, 640, 0.2, 3.6),
+      T('a partir de', 'mont ink', 44, 760, 0.5, 3.6),
+      T('R$ 4,99', 'cinzel gold', 220, 920, 0.8, 3.6, { lh: 1.15 }),
+      L('Seguindo a @lojabluum você vê primeiro', 'corm ink', 72, 520, 4.0, 8.4),
+      L('— as ofertas da semana', 'corm ink', 64, 710, 4.6, 8.4),
+      L('— o que acabou de chegar', 'corm ink', 64, 810, 5.1, 8.4),
+      L('— dicas de make e skincare', 'corm ink', 64, 910, 5.6, 8.4),
+      { type: 'lotus', width: 300, y: 470, anim: 'rise', at: 8.8 },
+      T('Siga @lojabluum', 'corm ink', 96, 760, 9.1),
+      T('Inauguração: sábado, 7 de novembro', 'mont ink', 40, 870, 9.5),
+      T(ADDR, 'mont ink', 36, 935, 9.8),
+    ],
+    audio: { dur: 13, booms: [[0.3, 0.3], [8.8, 0.3]], chimes: [[84, 0.8, 0.08], [81, 4.6, 0.04], [83, 5.1, 0.04], [84, 5.6, 0.04], [89, 9.1, 0.06]],
+             whooshes: [3.6, 8.5], riser: null, drums: [[3.75, 8.1], [9.375, 12.4]], quietBar: -1 },
+  },
+
+  faltam7: countdown('7', 'Faltam', 'dias', 'Sábado, 7 de novembro, a Bluum abre as portas em Olinda.'),
+  faltam3: countdown('3', 'Faltam', 'dias', 'Sábado, 7 de novembro. Já separou o look pra ir com a gente?'),
+  amanha: countdown('07/11', 'É amanhã', '', 'A Bluum abre as portas amanhã, na Estrada de Águas Compridas.'),
+  hoje: countdown('07/11', 'É hoje', '', 'A Bluum abre as portas hoje. Vem conhecer!'),
+};
+
+const V = VARIANTS[new URLSearchParams(location.search).get('v') || 'data'];
+// Um som suave para cada elemento que entra e silêncio no resto (técnica do prompt do @aschapmann,
+// awesome-opus5-5-videos). Os toques ficam mais baixos que a música.
+const NOTES = [81, 84, 86, 89, 84, 88, 86, 81];
+V.audio.chimes = V.els.filter(e => e.at != null).map((e, i) => [NOTES[i % NOTES.length], e.at + 0.05, (e.cls || '').includes('gold') || e.type ? 0.07 : 0.035]);
+window.DURATION = V.dur; window.FPS = 30; window.AUDIO_SPEC = V.audio;
+
+const GOLD_FILTER = 'drop-shadow(0 2px 0 rgba(255,244,214,.5)) drop-shadow(0 4px 6px rgba(0,70,64,.25))';
+const IMG_FILTER = 'drop-shadow(0 6px 10px rgba(0,70,64,.22))';
+const cam = document.getElementById('cam');
+let nodes = [];
+
+function build(logo) {
+  cam.insertAdjacentHTML('beforeend', GOLD_DEFS);
+  nodes = V.els.map(spec => {
+    let el;
+    if (spec.type) {
+      el = document.createElement('img');
+      el.src = logo[spec.type].url;
+      el.style.width = spec.width + 'px';
+      el.className = 'a';
+      el.dataset.filter = IMG_FILTER;
+    } else {
+      el = document.createElement('div');
+      el.className = 'a ' + (spec.cls || '');
+      el.style.cssText += spec.style || '';
+      if (spec.width) el.style.width = spec.width + 'px';
+      if (spec.lh) el.style.lineHeight = spec.lh;
+      if (spec.weight) el.style.fontWeight = spec.weight;
+      el.style.lineHeight = el.style.lineHeight || '1.18';
+      el.innerHTML = spec.html;
+      if ((spec.cls || '').includes('gold')) el.dataset.filter = GOLD_FILTER;
+      // frases entram palavra por palavra (o ouro e os textos curtos entram inteiros)
+      const plain = !/[<]/.test(spec.html) && spec.html.trim().split(/\s+/).length > 2 && !(spec.cls || '').includes('gold');
+      if (plain && !spec.anim) {
+        el.innerHTML = spec.html.trim().split(/\s+/).map(w => `<span style="display:inline-block">${w}</span>`).join(' ');
+      }
+    }
+    cam.appendChild(el);
+    return { spec, el, words: [...el.querySelectorAll(':scope > span')] };
+  });
+}
+
+function render(t) {
+  cam.style.transform = `scale(${lerp(1, 1.04, eInOut(t / V.dur))})`;
+  for (const { spec, el, words } of nodes) {
+    const at = spec.at ?? 0, dur = spec.dur ?? 0.6;
+    const k = eOut(p(t, at, at + dur));
+    const ko = spec.out != null ? eOut(p(t, spec.out, spec.out + 0.35)) : 0;
+    const y = spec.y;
+    if (words.length) { // palavra por palavra: 18px, 0,5s, 0,06s entre palavras
+      place(el, { y: y - 18 * ko, o: (t >= at ? 1 : 0) * (1 - ko) });
+      words.forEach((w, i) => {
+        const kw = eOut(p(t, at + i * 0.06, at + i * 0.06 + 0.5));
+        w.style.transform = `translateY(${18 * (1 - kw)}px)`;
+        w.style.opacity = kw;
+      });
+      continue;
+    }
+    switch (spec.anim) {
+      case 'wipe':
+        place(el, { y, o: (t >= at ? 1 : 0) * (1 - ko) });
+        el.style.clipPath = `inset(0 ${50 * (1 - k)}% 0 ${50 * (1 - k)}%)`;
+        break;
+      case 'fade':
+        place(el, { y, o: k * (1 - ko) });
+        break;
+      default: // rise: 28px para cima, ease-out, sem mola
+        place(el, { y: y + 28 * (1 - k) - 18 * ko, o: k * (1 - ko) });
+    }
+  }
+}
+
+window.render = render;
+window.ready = (async () => {
+  await Promise.all([document.fonts.load('700 100px Cinzel'), document.fonts.load('600 100px "Cormorant Garamond"'),
+                     document.fonts.load('500 40px Montserrat'), document.fonts.load('600 40px Montserrat')]);
+  build(await keyLogo());
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  render(0);
+  return true;
+})();
+</script>
+<script src="audio.js"></script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum ad</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Montserrat:wght@500;600;700&display=block" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #6bc8be; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+  .a { position: absolute; left: 0; top: 0; white-space: nowrap; will-change: transform, opacity; }
+  .full { position: absolute; inset: 0; }
+
+  #bg { background: radial-gradient(ellipse 120% 85% at 50% 40%, #7dd2c8 0%, #6bc8be 55%, #5fbdb2 100%); }
+  .blob { position: absolute; width: 1100px; height: 1100px; border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,255,255,.28) 0%, rgba(255,255,255,0) 65%); }
+  #rays { position: absolute; width: 1800px; height: 1800px; left: -360px; top: -330px;
+          background: repeating-conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,.30) 4deg, rgba(255,255,255,0) 9deg, rgba(255,255,255,0) 15deg);
+          -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 25%, transparent 60%); }
+  #vignette { background: radial-gradient(ellipse 85% 70% at 50% 45%, transparent 60%, rgba(20,100,92,.28) 100%); }
+  #flash { background: radial-gradient(circle at 50% 42%, #fffbe8 0%, rgba(255,240,200,.6) 40%, rgba(255,240,200,0) 75%); opacity: 0; }
+
+  .gold {
+    background: linear-gradient(100deg, #6e4806 0%, #a8770f 18%, #e2b955 30%, #b5830d 45%, #84580a 60%, #cf9f38 78%, #74500a 100%);
+    background-size: 260% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 0 rgba(255,244,214,.45)) drop-shadow(0 6px 10px rgba(0,80,72,.28));
+  }
+  .cream { color: #0d4c46; text-shadow: 0 1px 0 rgba(255,255,255,.35); }
+  .cinzel { font-family: 'Cinzel', serif; font-weight: 700; }
+  .corm { font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+  .mont { font-family: 'Montserrat', sans-serif; }
+
+  .line-mask { overflow: hidden; padding: 0 30px 18px; }
+  .line-mask > span { display: inline-block; }
+
+  #card { width: 840px; height: 960px; border-radius: 36px; border: 2px solid rgba(168,119,15,.55);
+          background: linear-gradient(180deg, rgba(255,255,255,.26), rgba(255,255,255,.10));
+          box-shadow: 0 30px 80px rgba(0,80,72,.15); }
+  .item { width: 840px; text-align: center; }
+  .item svg { width: 380px; height: 380px; display: block; margin: 0 auto; overflow: visible; }
+  .item svg * { fill: none; stroke: url(#goldStroke); stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+  .item .label { display: block; margin-top: 34px; letter-spacing: .06em; }
+  .item .sub { display: block; margin-top: 14px; font-size: 58px; font-style: italic; }
+  .counter { font-size: 30px; letter-spacing: .4em; color: rgba(13,76,70,.8); font-weight: 600; }
+
+  .shine { position: absolute; left: 0; top: 0; pointer-events: none;
+           background: linear-gradient(110deg, transparent 38%, rgba(255,255,245,.95) 50%, transparent 62%);
+           background-size: 300% 100%; -webkit-mask-size: 100% 100%; mix-blend-mode: screen; }
+
+  #btn { width: 700px; height: 128px; border-radius: 64px; display: flex; align-items: center; justify-content: center; gap: 22px;
+         background: linear-gradient(100deg, #b98712 0%, #f3d277 30%, #fff0bb 45%, #e7bb4c 62%, #b07c10 100%);
+         background-size: 220% 100%;
+         box-shadow: 0 16px 40px rgba(0,80,72,.3), inset 0 2px 0 rgba(255,255,255,.6);
+         color: #073f3a; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 46px; letter-spacing: .08em; }
+  #ring { width: 700px; height: 128px; border-radius: 64px; border: 3px solid rgba(168,119,15,.8); }
+  #chip { padding: 16px 38px; border-radius: 50px; border: 2px solid rgba(168,119,15,.7); background: rgba(255,255,255,.3);
+          font-size: 38px; font-weight: 600; letter-spacing: .02em; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="goldStroke" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e2b955"/><stop offset=".35" stop-color="#b5830d"/>
+      <stop offset=".7" stop-color="#84580a"/><stop offset="1" stop-color="#cf9f38"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div id="stage">
+  <div id="bg" class="full"></div>
+  <div id="blob1" class="blob a"></div>
+  <div id="blob2" class="blob a"></div>
+  <div id="rays"></div>
+  <canvas id="particles" class="full" width="1080" height="1920"></canvas>
+
+  <!-- Cena 1: gancho com o preço real da bio -->
+  <div id="s1soon" class="a mont" style="font-size:36px;font-weight:700;letter-spacing:.26em;color:#073f3a;padding:14px 34px 14px 44px;border-radius:40px;background:linear-gradient(100deg,#c8961c,#f6d983 45%,#d9a93a);box-shadow:0 10px 26px rgba(0,80,72,.3)">INAUGURAÇÃO · 07/11</div>
+  <div id="s1a" class="a mont cream" style="font-size:44px;font-weight:600;letter-spacing:.32em">PRODUTOS A PARTIR DE</div>
+  <div id="s1b" class="a cinzel gold" style="font-size:250px;line-height:1"><span style="font-size:.5em;vertical-align:.75em;margin-right:.12em">R$</span>4,99</div>
+  <div id="s1line" class="a" style="height:3px;width:560px;background:linear-gradient(90deg,transparent,#b8860b,transparent)"></div>
+  <div id="s1c" class="a corm cream" style="font-size:62px;font-style:italic">make · cosméticos · acessórios</div>
+
+  <!-- Cena 2 -->
+  <div id="s2" class="a" style="width:1080px;text-align:center">
+    <div class="line-mask"><span id="s2l1" class="corm cream" style="font-size:128px">Se arrumar</span></div>
+    <div class="line-mask"><span id="s2l2" class="corm cream" style="font-size:128px">não precisa</span></div>
+    <div class="line-mask"><span id="s2l3" class="corm gold" style="font-size:150px;font-style:italic">custar caro.</span></div>
+    <div id="s2u" style="height:3px;width:620px;margin:6px auto 0;background:linear-gradient(90deg,transparent,#b8860b,transparent);transform-origin:left"></div>
+  </div>
+
+  <!-- Cena 3: categorias -->
+  <div id="card" class="a"></div>
+  <div id="counter" class="a mont counter">01 / 03</div>
+  <div id="item0" class="a item">
+    <svg viewBox="0 0 200 200">
+      <path pathLength="1" d="M66 112 h68 v70 a4 4 0 0 1 -4 4 h-60 a4 4 0 0 1 -4 -4 z"/>
+      <path pathLength="1" d="M66 126 h68 M66 170 h68"/>
+      <path pathLength="1" d="M76 112 v-30 h48 v30"/>
+      <path pathLength="1" d="M82 82 v-36 q0 -16 18 -26 l18 14 q6 6 6 16 v32"/>
+      <path pathLength="1" d="M90 70 l0 -18"/>
+    </svg>
+    <span class="label cinzel gold" style="font-size:130px">MAKE</span>
+    <span class="sub corm cream">para realçar sua beleza</span>
+  </div>
+  <div id="item1" class="a item">
+    <svg viewBox="0 0 200 200">
+      <path pathLength="1" d="M64 96 q0 -12 12 -12 h48 q12 0 12 12 v80 q0 12 -12 12 h-48 q-12 0 -12 -12 z"/>
+      <path pathLength="1" d="M84 84 v-14 h32 v14"/>
+      <path pathLength="1" d="M88 70 v-22 q0 -22 12 -26 q12 4 12 26 v22"/>
+      <path pathLength="1" d="M78 118 h44 v38 h-44 z"/>
+      <path pathLength="1" d="M152 120 q10 14 0 22 q-10 -8 0 -22 z"/>
+    </svg>
+    <span class="label cinzel gold" style="font-size:104px">COSMÉTICOS</span>
+    <span class="sub corm cream">cuidado para o dia a dia</span>
+  </div>
+  <div id="item2" class="a item">
+    <svg viewBox="0 0 200 200">
+      <path pathLength="1" d="M100 18 q20 0 18 20 q-2 16 -18 20"/>
+      <circle pathLength="1" cx="100" cy="70" r="11"/>
+      <path pathLength="1" d="M100 86 q34 42 0 92 q-34 -50 0 -92 z"/>
+      <path pathLength="1" d="M100 112 q14 18 0 40 q-14 -22 0 -40 z"/>
+      <path pathLength="1" d="M150 60 l0 18 M141 69 l18 0 M48 120 l0 14 M41 127 l14 0"/>
+    </svg>
+    <span class="label cinzel gold" style="font-size:118px">ACESSÓRIOS</span>
+    <span class="sub corm cream">o toque final do look</span>
+  </div>
+
+  <!-- Marca (recortada do logo original) -->
+  <img id="lotus" class="a" alt="">
+  <div id="lotusShine" class="shine"></div>
+  <img id="word" class="a" alt="">
+  <div id="wordShine" class="shine"></div>
+  <img id="tag" class="a" alt="">
+
+  <!-- Cena 5: CTA -->
+  <div id="c1" class="a corm cream" style="font-size:86px;font-style:italic">Inauguração · sábado</div>
+  <div id="c2" class="a cinzel gold" style="font-size:170px;line-height:1;letter-spacing:.04em">07/11</div>
+  <div id="c3" class="a mont cream" style="font-size:38px;font-weight:500;display:flex;align-items:center;gap:14px">
+    <svg width="34" height="44" viewBox="0 0 24 32"><path d="M12 1C6 1 1.5 5.4 1.5 11.2 1.5 19 12 31 12 31s10.5-12 10.5-19.8C22.5 5.4 18 1 12 1zm0 14.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" fill="#b8860b"/></svg>
+    Estrada de Águas Compridas, 392 · Olinda
+  </div>
+  <div id="chip" class="a mont cream">Produtos a partir de R$ 4,99</div>
+  <div id="ring" class="a"></div>
+  <div id="btn" class="a">SIGA @LOJABLUUM <span style="font-size:52px">→</span></div>
+  <div id="c6" class="a mont cream" style="font-size:42px;font-weight:600;letter-spacing:.02em">e ative o lembrete</div>
+
+  <div id="vignette" class="full"></div>
+  <div id="flash" class="full"></div>
+</div>
+
+<script>
+const W = 1080, H = 1920, DURATION = 20, FPS = 30;
+const BEAT = 60 / 96; // 0.625s — cortes caem no tempo da música
+const $ = id => document.getElementById(id);
+
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const p = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, k) => a + (b - a) * k;
+const eOut = k => 1 - Math.pow(1 - k, 3);
+const eInOut = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+const eBack = k => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); };
+const eExpo = k => k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+
+function place(el, { x = 540, y = 960, s = 1, o = 1, blur = 0, r = 0 } = {}) {
+  el.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%) rotate(${r}deg) scale(${s})`;
+  el.style.opacity = o;
+  el.style.filter = blur > 0.05 ? `blur(${blur}px)` : '';
+  el.style.visibility = o <= 0.001 ? 'hidden' : 'visible';
+}
+// .gold already has a drop-shadow filter; keep it when blurring
+function placeGold(el, opts) {
+  place(el, opts);
+  const b = opts.blur || 0;
+  el.style.filter = `drop-shadow(0 2px 0 rgba(255,244,214,.45)) drop-shadow(0 6px 10px rgba(0,80,72,.28))${b > 0.05 ? ` blur(${b}px)` : ''}`;
+}
+const shineAt = (el, k) => { el.style.backgroundPosition = `${lerp(110, -10, k)}% 0`; };
+
+// ---------- Logo: remove o fundo turquesa do JPG e recorta lótus / BLUUM / tagline ----------
+async function keyLogo() {
+  const img = new Image();
+  img.src = 'assets/logo.jpg';
+  await img.decode();
+  const cv = document.createElement('canvas');
+  cv.width = img.naturalWidth; cv.height = img.naturalHeight;
+  const cx = cv.getContext('2d', { willReadFrequently: true });
+  cx.drawImage(img, 0, 0);
+  const d = cx.getImageData(0, 0, cv.width, cv.height);
+  const px = d.data;
+  // cor de fundo = média das bordas
+  let br = 0, bgc = 0, bb = 0, n = 0;
+  for (let x = 0; x < cv.width; x += 7) for (const y of [4, cv.height - 5]) {
+    const i = (y * cv.width + x) * 4; br += px[i]; bgc += px[i + 1]; bb += px[i + 2]; n++;
+  }
+  br /= n; bgc /= n; bb /= n;
+  for (let i = 0; i < px.length; i += 4) {
+    const dist = Math.hypot(px[i] - br, px[i + 1] - bgc, px[i + 2] - bb);
+    let a = clamp((dist - 44) / 76);
+    a = a * a * (3 - 2 * a);
+    if (a < 0.01) { px[i + 3] = 0; continue; }
+    // desfaz a mistura com o fundo para não sobrar halo turquesa
+    px[i] = clamp((px[i] - br * (1 - a)) / a, 0, 255);
+    px[i + 1] = clamp((px[i + 1] - bgc * (1 - a)) / a, 0, 255);
+    px[i + 2] = clamp((px[i + 2] - bb * (1 - a)) / a, 0, 255);
+    px[i + 3] = Math.round(a * 255);
+  }
+  cx.putImageData(d, 0, 0);
+
+  function crop(x0, y0, x1, y1) {
+    let minX = x1, minY = y1, maxX = x0, maxY = y0;
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) {
+      if (px[(y * cv.width + x) * 4 + 3] > 60) {
+        if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+    }
+    const pad = 6;
+    minX = Math.max(0, minX - pad); minY = Math.max(0, minY - pad);
+    maxX = Math.min(cv.width - 1, maxX + pad); maxY = Math.min(cv.height - 1, maxY + pad);
+    const o = document.createElement('canvas');
+    o.width = maxX - minX + 1; o.height = maxY - minY + 1;
+    o.getContext('2d').drawImage(cv, minX, minY, o.width, o.height, 0, 0, o.width, o.height);
+    return { url: o.toDataURL('image/png'), w: o.width, h: o.height };
+  }
+  return {
+    lotus: crop(560, 80, 1000, 392),
+    word: crop(60, 392, 1560, 590),
+    tag: crop(260, 600, 1340, 700),
+  };
+}
+
+const logo = { lotusW: 470, wordW: 960, tagW: 780 };
+function setupImg(imgEl, shineEl, data, width) {
+  imgEl.src = data.url;
+  imgEl.style.width = width + 'px';
+  const h = width * data.h / data.w;
+  if (shineEl) {
+    shineEl.style.width = width + 'px'; shineEl.style.height = h + 'px';
+    shineEl.style.webkitMaskImage = `url(${data.url})`;
+    shineEl.style.maskImage = `url(${data.url})`;
+  }
+  return h;
+}
+
+// ---------- Partículas douradas (determinísticas: posição = f(t)) ----------
+function rng(seed) { return () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296; }
+const R = rng(7);
+const dust = Array.from({ length: 90 }, () => ({
+  x: R() * W, y: R() * H, sp: 18 + R() * 55, sz: 1.5 + Math.pow(R(), 3) * 9, ph: R() * 6.28,
+  sw: 10 + R() * 30, tw: 0.6 + R() * 2.2, depth: R(),
+}));
+const burst = Array.from({ length: 70 }, () => ({ ang: R() * 6.28, v: 260 + R() * 900, sz: 2 + R() * 6, life: 0.9 + R() * 1.3 }));
+const pctx = $('particles').getContext('2d');
+
+function dot(x, y, r, a) {
+  const g = pctx.createRadialGradient(x, y, 0, x, y, r * 3);
+  g.addColorStop(0, `rgba(255,255,250,${a})`);
+  g.addColorStop(0.3, `rgba(250,225,150,${a * .6})`);
+  g.addColorStop(1, 'rgba(244,205,110,0)');
+  pctx.fillStyle = g;
+  pctx.beginPath(); pctx.arc(x, y, r * 3, 0, 6.283); pctx.fill();
+}
+
+function drawParticles(t) {
+  pctx.clearRect(0, 0, W, H);
+  const boost = 1 + 1.2 * Math.exp(-Math.pow((t - 13) / 1.2, 2));
+  for (const q of dust) {
+    const y = ((q.y - t * q.sp * (0.6 + q.depth)) % H + H) % H;
+    const x = q.x + Math.sin(t * 0.7 + q.ph) * q.sw;
+    const a = (0.25 + 0.55 * (0.5 + 0.5 * Math.sin(t * q.tw + q.ph))) * Math.min(1, boost * 0.8);
+    dot(x, y, q.sz * (0.6 + q.depth * 0.6), a);
+  }
+  for (const [t0, cx, cy] of [[0.18, 540, 860], [12.5, 540, 600]]) {
+    const dt = t - t0;
+    if (dt < 0 || dt > 2.4) continue;
+    for (const b of burst) {
+      if (dt > b.life) continue;
+      const k = dt / b.life;
+      const dist = b.v * eExpo(Math.min(1, dt / 1.1)) * 0.75;
+      dot(cx + Math.cos(b.ang) * dist, cy + Math.sin(b.ang) * dist * 0.9 + 60 * k * k, b.sz * (1 - k * .5), (1 - k) * 0.9);
+    }
+  }
+}
+
+// ---------- Linha do tempo ----------
+// 0–2.5 gancho | 2.5–5 problema | 5–12.5 categorias (2.5s cada) | 12.5–15.625 marca | 15.625–20 CTA
+let H_LOTUS = 0, H_WORD = 0;
+
+function render(t) {
+  // fundo vivo
+  place($('blob1'), { x: 540 + Math.sin(t * .35) * 260, y: 700 + Math.cos(t * .27) * 220, o: 1 });
+  place($('blob2'), { x: 540 + Math.cos(t * .3 + 2) * 300, y: 1300 + Math.sin(t * .22) * 200, o: .7 });
+  const raysO = 0.15 * eOut(p(t, 0, .4)) * (1 - p(t, 2.2, 2.5)) + 0.85 * eOut(p(t, 12.45, 13.2)) * (1 - 0.6 * p(t, 15.4, 16.2));
+  const raysY = t < 8 ? 860 : lerp(600, 330, eInOut(p(t, 15.625, 16.3)));
+  $('rays').style.opacity = raysO;
+  $('rays').style.transform = `translate(0px, ${raysY - 900 + 330}px) rotate(${t * 7}deg)`;
+  drawParticles(t);
+
+  const fl = Math.max(0.55 * Math.exp(-Math.pow((t - 0.32) / 0.12, 2)), 0.75 * Math.exp(-Math.max(0, t - 12.5) / 0.22) * (t >= 12.5 ? 1 : 0));
+  $('flash').style.opacity = fl;
+
+  // --- Cena 1 ---
+  const out1 = eInOut(p(t, 2.2, 2.5));
+  const k1a = eOut(p(t, 0, .35));
+  const kS = eOut(p(t, 0.1, .5));
+  place($('s1soon'), { y: 480, s: lerp(.85, 1, kS), o: kS * (1 - out1), blur: 6 * out1 });
+  place($('s1a'), { y: 640 - 30 * (1 - k1a), o: k1a * (1 - out1), blur: 6 * out1 });
+  $('s1a').style.letterSpacing = `${lerp(.6, .32, k1a)}em`;
+  const k1b = p(t, 0.08, 0.55);
+  placeGold($('s1b'), { y: 830, s: lerp(1.7, 1, eBack(k1b)) * (1 + 0.08 * out1) + 0.015 * Math.sin(t * 3), o: clamp(k1b * 4) * (1 - out1), blur: 10 * (1 - eOut(k1b)) + 8 * out1 });
+  shineAt($('s1b'), eInOut(p(t, 0.7, 1.7)));
+  place($('s1line'), { y: 990, s: 1, o: 1 - out1 });
+  $('s1line').style.width = `${560 * eOut(p(t, 0.45, 0.95))}px`;
+  const k1c = eOut(p(t, 0.65, 1.1));
+  place($('s1c'), { y: 1075 + 30 * (1 - k1c), o: k1c * (1 - out1), blur: 6 * out1 });
+
+  // --- Cena 2 ---
+  const out2 = eInOut(p(t, 4.7, 5.0));
+  place($('s2'), { y: 800 - 50 * out2, o: (t >= 2.4 ? 1 : 0) * (1 - out2), blur: 8 * out2 });
+  [[$('s2l1'), 2.5], [$('s2l2'), 2.78], [$('s2l3'), 3.1]].forEach(([el, s0]) => {
+    const k = eOut(p(t, s0, s0 + .55));
+    el.style.transform = `translateY(${(1 - k) * 110}%)`;
+  });
+  $('s2u').style.transform = `scaleX(${eInOut(p(t, 3.55, 4.1))})`;
+  shineAt($('s2l3'), eInOut(p(t, 3.5, 4.5)));
+
+  // --- Cena 3 ---
+  const cardIn = eOut(p(t, 4.9, 5.4)), cardOut = eInOut(p(t, 12.1, 12.5));
+  place($('card'), { y: 770, s: lerp(.92, 1, cardIn) * (1 + .04 * cardOut), o: cardIn * (1 - cardOut) });
+  const idx = clamp(Math.floor((t - 5) / 2.5), 0, 2);
+  $('counter').textContent = `0${idx + 1} / 03`;
+  place($('counter'), { y: 360, o: cardIn * (1 - cardOut) });
+  for (let i = 0; i < 3; i++) {
+    const el = $('item' + i), s0 = 5 + 2.5 * i, s1 = s0 + 2.5;
+    const kin = eOut(p(t, s0, s0 + .5)), kout = eInOut(p(t, s1 - .32, s1));
+    place(el, { x: 540 + 160 * (1 - kin) - 160 * kout, y: 800, o: kin * (1 - kout), blur: 6 * ((1 - kin) + kout) });
+    const draw = eInOut(p(t, s0 + .05, s0 + 1.15));
+    el.querySelectorAll('svg [pathLength]').forEach((path, j) => {
+      const dj = eInOut(p(t, s0 + .05 + j * .12, s0 + .95 + j * .12));
+      path.style.strokeDasharray = '1 1';
+      path.style.strokeDashoffset = 1 - dj;
+    });
+    el.querySelector('svg').style.filter = `drop-shadow(0 0 ${6 + 10 * draw}px rgba(255,214,120,${.25 + .3 * draw}))`;
+    shineAt(el.querySelector('.label'), eInOut(p(t, s0 + .6, s0 + 1.6)));
+  }
+
+  // --- Cena 4/5: marca ---
+  const kL = p(t, 12.5, 13.2);
+  const toCta = eInOut(p(t, 15.625, 16.35));
+  const lotusTop = eOut(p(t, 0, .3)) * (1 - out1); // lótus pequeno no gancho
+  let lo, ls, ly;
+  if (t < 3) { lo = lotusTop; ls = 0.42; ly = 330; }
+  else { lo = clamp(kL * 3); ls = lerp(.5, 1, eBack(kL)) * lerp(1, .5, toCta); ly = lerp(600, 300, toCta); }
+  const glow = 14 + 18 * Math.exp(-Math.max(0, t - 12.6) / .8) + 6 * Math.sin(t * 2.2);
+  place($('lotus'), { y: ly, s: ls, o: lo });
+  $('lotus').style.filter = `drop-shadow(0 0 ${glow}px rgba(255,240,190,.55)) drop-shadow(0 8px 12px rgba(0,80,72,.3))`;
+  place($('lotusShine'), { y: ly, s: ls, o: lo * .85 });
+  shineAt($('lotusShine'), eInOut(p(t, 13.1, 13.9)));
+
+  const kW = eInOut(p(t, 12.75, 13.55));
+  const wy = lerp(600 + H_LOTUS / 2 + H_WORD / 2 + 40, 300 + H_LOTUS * .25 + H_WORD * .3 + 40, toCta);
+  const ws = lerp(1, .6, toCta);
+  place($('word'), { y: wy, s: ws, o: t >= 12.7 ? 1 : 0 });
+  $('word').style.clipPath = `inset(0 ${50 * (1 - kW)}% 0 ${50 * (1 - kW)}%)`;
+  $('word').style.filter = 'drop-shadow(0 8px 12px rgba(0,80,72,.3))';
+  place($('wordShine'), { y: wy, s: ws, o: t >= 12.7 ? .9 : 0 });
+  shineAt($('wordShine'), eInOut(p(t, 13.7, 14.6)));
+
+  const kT = eOut(p(t, 13.45, 14.0));
+  place($('tag'), { y: wy + H_WORD / 2 + 80 + 20 * (1 - kT), o: kT * (1 - toCta) });
+
+  // --- Cena 5: CTA ---
+  const st = (a) => eOut(p(t, a, a + .45));
+  const k = [st(16.0), st(16.2), st(16.4), st(16.6), st(16.85), st(17.05)];
+  place($('c1'), { y: 625 + 30 * (1 - k[0]), o: k[0] });
+  placeGold($('c2'), { y: 795 + 30 * (1 - k[1]), o: k[1] });
+  shineAt($('c2'), eInOut(p(t, 16.7, 17.6)));
+  place($('c3'), { y: 930 + 30 * (1 - k[2]), o: k[2] });
+  place($('chip'), { y: 1015 + 30 * (1 - k[3]), o: k[3] });
+  const pulse = t > 17.3 ? 1 + .035 * Math.sin((t - 17.3) / BEAT * Math.PI) ** 2 : 1;
+  place($('btn'), { y: 1125, s: lerp(.8, 1, eBack(p(t, 16.85, 17.35))) * pulse, o: k[4] });
+  $('btn').style.backgroundPosition = `${lerp(100, 0, (t * .45) % 1)}% 0`;
+  const rk = t > 17.3 ? ((t - 17.3) % (BEAT * 2)) / (BEAT * 2) : 0;
+  place($('ring'), { y: 1125, s: 1 + .18 * eOut(rk), o: t > 17.3 ? (1 - rk) * .8 : 0 });
+  place($('c6'), { y: 1232, o: k[5] });
+}
+
+window.DURATION = DURATION; window.FPS = FPS; window.BEAT = BEAT;
+window.render = render;
+window.ready = (async () => {
+  await Promise.all([
+    document.fonts.load('700 100px Cinzel'), document.fonts.load('600 100px "Cormorant Garamond"'),
+    document.fonts.load('italic 600 100px "Cormorant Garamond"'), document.fonts.load('600 40px Montserrat'),
+    document.fonts.load('700 40px Montserrat'), document.fonts.load('500 40px Montserrat'),
+  ]);
+  const L = await keyLogo();
+  H_LOTUS = setupImg($('lotus'), $('lotusShine'), L.lotus, logo.lotusW);
+  H_WORD = setupImg($('word'), $('wordShine'), L.word, logo.wordW);
+  setupImg($('tag'), null, L.tag, logo.tagW);
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  render(0);
+  return true;
+})();
+</script>
+<script src="audio.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+/* Identidade Bluum para reel.html e posts.html. Decisões em ../DESIGN.md. */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --fundo: #6dc8bf; --tinta: #0d4c46; --fio: #a8770f; }
+html, body { overflow: hidden; background: var(--fundo); }
+#stage { position: relative; overflow: hidden; background: var(--fundo); }
+.a { position: absolute; left: 0; top: 0; white-space: nowrap; will-change: transform, opacity; }
+.full { position: absolute; inset: 0; }
+
+/* ouro em relevo: um elemento por peça (data, número ou preço) */
+.gold {
+  background: linear-gradient(180deg, #f1d27a 0%, #c9971f 38%, #8c5f08 62%, #d8aa3e 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 0 rgba(255,244,214,.5)) drop-shadow(0 4px 6px rgba(0,70,64,.25));
+}
+.ink { color: var(--tinta); }
+.cinzel { font-family: 'Cinzel', serif; font-weight: 700; }
+.corm { font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+.mont { font-family: 'Montserrat', sans-serif; font-weight: 500; }
+.left { text-align: left; white-space: normal; }
+.center { text-align: center; }
+.fio { height: 2px; background: var(--fio); }
+.icon-line * { fill: none; stroke: url(#goldStroke); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
