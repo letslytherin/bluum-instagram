@@ -1,4 +1,4 @@
-# Guia de postagem Bluum · 30/10 a 10/11
+# Guia de postagem Bluum · 30/10 a 10/11 (atualizado em 04/11)
 
 > Gerado do Painel Instagram em 30/10. Os arquivos ficam em `Desktop\bluum\motion\out\`: imagens em `posts\` e vídeos em `reels\`. Se algo mudar no painel, vale o painel.
 
@@ -187,41 +187,60 @@ Salva pra não esquecer 📌
 
 > Falta: Horário de funcionamento; Formas de pagamento
 
-### 11. 19:00 · Reels · Faltam 3 dias (Reel + Stories)
-**Arquivo:** `reels/reel-faltam3.mp4`, `posts/story-faltam-3.png`
+### 11. 19:00 · Reels · VEM AÍ: Reel da montagem + Stories faltam 3
+**Arquivo:** `reels/reel-vemai.mp4`, `reels/story-vemai-faltam3.mp4`
 
 **Como postar:**
-- Reel pronto: motion/out/reels/reel-faltam3.mp4 (8s)
-- Stories: motion/out/posts/story-faltam-3.png + figurinha de contagem regressiva no espaço vazio
+- Reel pronto: motion/out/reels/reel-vemai.mp4 (15s, com a voz "VEM AÍ" e trilha própria)
+- Áudio: manter o som original do vídeo. Não trocar por música do Instagram, senão a voz some
+- Capa: quadro do 07/11 (por volta de 9s)
+- Marcar localização: Olinda, PE. Depois de postar: repostar nos Stories
+- Stories: motion/out/reels/story-vemai-faltam3.mp4 + figurinha de contagem regressiva para 07/11 no espaço vazio abaixo de "sábado · 07/11"
 - Mensagem no Canal Bluum VIP
 
 **Legenda (copiar e colar):**
 
 ```
-Faltam 3 dias 🪷 Já separou o look pro sábado?
-Ativa o lembrete e chama a amiga!
+VEM AÍ 🪷 A Bluum tá ficando pronta!
+Vitrine montada, prateleiras no lugar… e sábado, 07/11, a porta abre pra você.
 
-#BluumFloresce #inauguracao #olinda
+💄 Make, cosméticos e acessórios a partir de R$ 4,99
+📍 Estrada de Águas Compridas, 392 · Olinda-PE
+
+Marca aqui quem vai com você no sábado 👯‍♀️
+Segue a @lojabluum e ativa as notificações pra não perder nada.
+
+#BluumFloresce #inauguracao #olinda #recife #maquiagem #achadinhos
 ```
+
+## quinta, 05/11
+
+### 12. 12:00 · Stories · Faltam 2 dias
+**Arquivo:** `reels/story-vemai-faltam2.mp4`
+
+**Como postar:**
+- Stories: motion/out/reels/story-vemai-faltam2.mp4 + figurinha de contagem regressiva para 07/11 no espaço vazio
+- Repostar o Reel VEM AÍ nos Stories logo depois
+- Mensagem no Canal Bluum VIP
 
 ## sexta, 06/11
 
-### 12. 19:00 · Stories · É amanhã!
-**Arquivo:** `posts/story-amanha.png`, `reels/reel-amanha.mp4`
+### 13. 19:00 · Stories · É amanhã!
+**Arquivo:** `reels/story-vemai-amanha.mp4` (ou a arte parada `posts/story-amanha.png`)
 
 **Como postar:**
-- Stories: motion/out/posts/story-amanha.png + figurinha de contagem regressiva
+- Stories: motion/out/reels/story-vemai-amanha.mp4 + figurinha de contagem regressiva
 - Reel opcional às 19h: motion/out/reels/reel-amanha.mp4
 - Mensagem no Canal Bluum VIP
 
 ## sábado, 07/11
 
-### 13. 08:00 · Reels · É HOJE! (Reel animado, de manhã)
+### 14. 08:00 · Reels · É HOJE! (Reel animado, de manhã)
 **Arquivo:** `reels/reel-hoje.mp4`, `posts/story-hoje.png`
 
 **Como postar:**
 - Reel pronto: motion/out/reels/reel-hoje.mp4 (8s)
-- Stories: motion/out/posts/story-hoje.png
+- Stories: motion/out/reels/story-vemai-hoje.mp4 (voz "É HOJE") ou a arte parada motion/out/posts/story-hoje.png
 - Mensagem no Canal Bluum VIP
 
 **Legenda (copiar e colar):**
@@ -236,7 +255,7 @@ Vem florescer com a gente!
 
 > Falta: Horário de abertura (para colocar na legenda)
 
-### 14. 09:00 · Stories · DIA D: inauguração ao vivo
+### 15. 09:00 · Stories · DIA D: inauguração ao vivo
 **Arquivo:** (sem arquivo: gravar ou fazer na hora)
 
 **Como postar:**
@@ -247,7 +266,7 @@ Vem florescer com a gente!
 
 > Falta: Pessoa responsável pelo celular no dia
 
-### 15. 20:00 · Reels · Reel do dia da inauguração
+### 16. 20:00 · Reels · Reel do dia da inauguração
 **Arquivo:** (sem arquivo: gravar ou fazer na hora)
 
 **Como postar:**
@@ -264,7 +283,7 @@ Obrigada, Olinda 🥹🪷 Hoje a Bluum floresceu.
 
 ## terça, 10/11
 
-### 16. 19:00 · Reels · Os mais procurados da semana
+### 17. 19:00 · Reels · Os mais procurados da semana
 **Arquivo:** (sem arquivo: gravar ou fazer na hora)
 
 **Como postar:**

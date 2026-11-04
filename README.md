@@ -36,4 +36,4 @@ node render.mjs --page "reel.html?v=data" --out reels/reel-data.mp4   # gera um 
 ```
 Os textos das imagens ficam em `posts.html` e os dos vídeos em `reel.html`. Para rodar, é preciso ter o FFmpeg instalado.
 
-`data/calendario-atual.json` é uma cópia do painel feita em 30/10. Se houver diferença, vale o painel.
+`data/calendario-atual.json` é uma cópia do painel feita em 04/11. Se houver diferença, vale o painel.

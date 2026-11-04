@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum · VEM AÍ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@600&family=Montserrat:wght@500;600;700&display=block" rel="stylesheet">
+<link href="brand.css" rel="stylesheet">
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  #cam { position: absolute; inset: 0; transform-origin: 50% 48%; }
+  #foot { position: absolute; inset: -40px; overflow: hidden; }
+  #foot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  #tint { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 48%, rgba(8,46,42,.45), rgba(5,30,28,.82)); }
+  #card { position: absolute; inset: 0; background: var(--fundo); }
+  #dust { position: absolute; inset: 0; }
+  #flash { position: absolute; inset: 0; background: #fff8e6; pointer-events: none; }
+  /* ouro do nome no logo: mais metal, mais brilho, com o mesmo Cinzel do BLUUM */
+  .goldx {
+    font-family: 'Cinzel', serif; font-weight: 900; letter-spacing: .02em;
+    background-image: linear-gradient(100deg, transparent 38%, rgba(255,255,240,.95) 50%, transparent 62%),
+      linear-gradient(180deg, #fff1b0 0%, #f2cd5b 20%, #c88f1a 46%, #8a5a07 56%, #d9a93d 76%, #fbe39a 100%);
+    background-size: 260% 100%, 100% 100%; background-repeat: no-repeat;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .blk { background: var(--fundo); color: var(--tinta); font: 700 60px/1.22 Montserrat, sans-serif; padding: 16px 30px 18px; white-space: normal; text-align: center; max-width: 940px; }
+  .lbl { font: 600 40px Montserrat, sans-serif; letter-spacing: .32em; color: var(--tinta); }
+  .ink9 { font-family: 'Cinzel', serif; font-weight: 900; color: var(--tinta); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cam">
+    <div id="foot"><img id="fimg" alt=""></div>
+    <div id="tint"></div>
+    <div id="card"></div>
+    <canvas id="dust" width="1080" height="1920"></canvas>
+  </div>
+  <div id="flash"></div>
+</div>
+<script src="brand.js"></script>
+<script>
+// Peça "VEM AÍ" com a filmagem real da montagem da loja. ?v=reel | s3 | s2 | amanha | hoje
+// Batida a 128 BPM: cada corte cai numa batida (B = 0,46875 s).
+const B = 60 / 128;
+const ADDR = 'Estrada de Águas Compridas, 392';
+const GOLD_SH = 'drop-shadow(0 3px 0 #6b4504) drop-shadow(0 12px 22px rgba(0,30,28,.5))';
+const GOLD_SH_CARD = 'drop-shadow(0 3px 0 #7a5208) drop-shadow(0 10px 16px rgba(0,70,64,.3))';
+
+const clip = (name, t0, t1) => ({ kind: 'clip', name, t0, t1 });
+const photo = (src, t0, t1, pos = '50% 50%') => ({ kind: 'photo', src, t0, t1, pos });
+const X = (html, cls, size, y, at, out, anim = 'rise', extra = {}) => ({ html, cls, size, y, at, out, anim, ...extra });
+
+function hook(a, b) {
+  return [X(a, 'goldx', 300, 800, 0.12, 1.8, 'slam', { sh: GOLD_SH }), X(b, 'goldx', 300, 1100, 0.5, 1.8, 'slam', { sh: GOLD_SH })];
+}
+function story({ hookA = 'VEM', hookB = 'AÍ', frase, card, voz, vozFim }) {
+  const tc = 10 * B; // 4,6875 s
+  return {
+    dur: 10,
+    shots: [clip('vitrine', 0, 4 * B), clip('prateleiras', 4 * B, 6 * B), photo('assets/bastidores/foto-1.jpg', 6 * B, 8 * B, '30% 50%'), clip('ripado', 8 * B, tc)],
+    card: tc,
+    els: [...hook(hookA, hookB), X(frase, 'blk', 62, 1240, 4 * B + 0.08, tc - 0.05, 'block'),
+          { type: 'lotus', width: 190, y: 300, anim: 'pop', at: tc + 0.06 }, ...card, X('@lojabluum', 'mont ink', 40, 1730, tc + 1.6, null, 'rise', { weight: 600 })],
+    voices: [[voz, 0.08, 5, true], [vozFim, tc + 0.3, 3]],
+    bursts: [[tc + 0.47, 540, 820]],
+    audio: { bpm: 128, dur: 10, kick: 0.7, drums: [[4 * B, 9.4]], quietBar: 0, risers: [[0.15, 4 * B - 0.03], [8 * B, tc]],
+             booms: [[0.12, 0.6], [0.5, 0.45], [4 * B, 0.5], [tc + 0.47, 0.6]], whooshes: [6 * B - 0.25, 8 * B - 0.25, tc - 0.3], chimes: [[84, tc + 0.47, 0.1], [89, tc + 0.5, 0.06]] },
+  };
+}
+const FALTAM = n => [
+  X('FALTAM', 'ink9', 112, 500, 10 * B + 0.23),
+  X(n, 'goldx', 640, 840, 10 * B + 0.47, null, 'slam', { sh: GOLD_SH_CARD, pulse: true }),
+  X('DIAS', 'ink9', 112, 1150, 10 * B + 0.7),
+  X('sábado · 07/11 · Olinda', 'mont ink', 46, 1262, 10 * B + 1.17, null, 'rise', { weight: 600 }),
+];
+const PALAVRA = (a, b) => [
+  X(a, 'ink9', 130, 560, 10 * B + 0.23),
+  X(b, 'goldx', b.length > 4 ? 172 : 270, 800, 10 * B + 0.47, null, 'slam', { sh: GOLD_SH_CARD, pulse: true }),
+  X('sábado · 07/11', 'mont ink', 50, 1030, 10 * B + 0.94, null, 'rise', { weight: 600 }),
+  X(ADDR + ' · Olinda', 'mont ink', 36, 1100, 10 * B + 1.17),
+];
+
+const VARIANTS = {
+  reel: {
+    dur: 15,
+    shots: [clip('vitrine', 0, 4 * B), clip('prateleiras', 4 * B, 6 * B), photo('assets/bastidores/foto-1.jpg', 6 * B, 8 * B, '30% 50%'),
+            clip('ripado', 8 * B, 10 * B), clip('balcao', 10 * B, 12 * B), photo('assets/bastidores/foto-4.jpg', 12 * B, 14 * B, '72% 50%'), clip('parede', 14 * B, 16 * B)],
+    card: 16 * B,
+    els: [
+      ...hook('VEM', 'AÍ'),
+      X('A Bluum tá ficando pronta', 'blk', 62, 1240, 4 * B + 0.08, 10 * B - 0.05, 'block'),
+      X('vitrine montada, | prateleiras no lugar', 'blk', 62, 1240, 10 * B + 0.08, 16 * B - 0.05, 'block'),
+      X('INAUGURAÇÃO', 'lbl', 40, 540, 16 * B + 0.1, 23.5 * B),
+      X('SÁBADO', 'ink9', 150, 700, 17 * B, 23.5 * B, 'pop'),
+      X('07/11', 'goldx', 330, 960, 18 * B, 23.5 * B, 'slam', { sh: GOLD_SH_CARD, pulse: true }),
+      X(ADDR, 'mont ink', 42, 1190, 20 * B, 23.5 * B, 'rise', { weight: 600 }),
+      X('Olinda-PE', 'mont ink', 42, 1250, 20 * B + 0.15, 23.5 * B, 'rise', { weight: 600 }),
+      { type: 'lotus', width: 330, y: 470, anim: 'pop', at: 24 * B + 0.04 },
+      { type: 'word', width: 920, y: 770, anim: 'wipe', at: 24 * B + 0.25, dur: 0.6 },
+      { type: 'tag', width: 780, y: 890, anim: 'fade', at: 24 * B + 0.6 },
+      X('a partir de R$ 4,99', 'corm ink', 80, 1040, 26 * B + 0.1),
+      X('Siga @lojabluum e ativa o lembrete', 'mont ink', 40, 1150, 28 * B, null, 'rise', { weight: 600 }),
+    ],
+    zoomOut: [23.2 * B, 24 * B], // mergulho no 07/11 antes do logo
+    flashes: [0.12, 4 * B, 24 * B],
+    bursts: [[18 * B, 540, 960], [24 * B + 0.04, 540, 560]],
+    voices: [['assets/voz/vem-ai.mp3', 0.08, 5, true], ['assets/voz/fecho-sabado.mp3', 24 * B + 0.3, 3]],
+    audio: { bpm: 128, dur: 15, kick: 0.7, drums: [[4 * B, 20 * B], [24 * B, 31 * B]], quietBar: 0, risers: [[0.15, 4 * B - 0.03], [20 * B, 24 * B - 0.03]],
+             booms: [[0.12, 0.6], [0.5, 0.45], [4 * B, 0.5], [16 * B, 0.35], [18 * B, 0.6], [24 * B, 0.7]],
+             whooshes: [6, 8, 10, 12, 14, 16].map(k => k * B - 0.25).concat([23.6 * B]),
+             chimes: [[84, 18 * B, 0.1], [89, 18 * B + 0.03, 0.06], [77, 24 * B, 0.12], [84, 24 * B + 0.05, 0.09], [89, 24 * B + 0.1, 0.06], [81, 26 * B + 0.1, 0.05]] },
+  },
+  s3: story({ frase: 'A Bluum tá ficando pronta', card: FALTAM('3'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/faltam-3.mp3' }),
+  s2: story({ frase: 'A Bluum tá quase pronta', card: FALTAM('2'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/faltam-2.mp3' }),
+  amanha: story({ frase: 'Últimos detalhes pra você', card: PALAVRA('É', 'AMANHÃ'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/fecho-amanha.mp3' }),
+  hoje: story({ hookA: 'É', hookB: 'HOJE', frase: 'Abrimos hoje em Olinda', card: PALAVRA('É', 'HOJE'), voz: 'assets/voz/e-hoje.mp3', vozFim: 'assets/voz/fecho-hoje.mp3' }),
+};
+for (const k of ['s3', 's2', 'amanha', 'hoje']) VARIANTS[k].flashes = [0.12, 4 * B, VARIANTS[k].card];
+
+const V = VARIANTS[new URLSearchParams(location.search).get('v') || 'reel'];
+window.DURATION = V.dur; window.FPS = 30; window.AUDIO_SPEC = V.audio; window.VOICES = V.voices;
+
+const $ = id => document.getElementById(id);
+const cam = $('cam'), fimg = $('fimg'), tint = $('tint'), card = $('card'), flash = $('flash');
+let nodes = [], dust;
+
+function build(logo) {
+  nodes = V.els.map(spec => {
+    let el;
+    if (spec.type) {
+      el = document.createElement('img');
+      el.src = logo[spec.type].url; el.style.width = spec.width + 'px'; el.className = 'a';
+      el.dataset.filter = 'drop-shadow(0 6px 10px rgba(0,70,64,.22))';
+    } else {
+      el = document.createElement('div');
+      el.className = 'a ' + spec.cls;
+      el.style.fontSize = spec.size + 'px';
+      el.style.lineHeight = spec.cls.includes('goldx') ? '1.12' : '1.18';
+      if (spec.cls.includes('goldx')) el.style.padding = '0.08em 0.12em';
+      if (spec.weight) el.style.fontWeight = spec.weight;
+      if (spec.sh) el.dataset.filter = spec.sh;
+      el.innerHTML = spec.anim === 'block' ? spec.html.split(' ').map(w => w === '|' ? '<br>' : `<span style="display:inline-block">${w}</span>`).join(' ') : spec.html;
+    }
+    cam.appendChild(el);
+    return { spec, el, words: [...el.querySelectorAll('span')] };
+  });
+  dust = makeParticles($('dust'), { count: 60, seed: 11 });
+}
+
+const shake = (t, t0, amp) => { const d = t - t0; if (d < 0 || d > 0.35) return [0, 0]; const a = amp * Math.exp(-d * 12); return [Math.sin(d * 97) * a, Math.cos(d * 83) * a]; };
+let lastSrc = '';
+
+async function render(t) {
+  // --- fundo: filmagem real até o cartão turquesa ---
+  const shot = V.shots.find(s => t >= s.t0 && t < s.t1) || V.shots[V.shots.length - 1];
+  const local = t - shot.t0, len = shot.t1 - shot.t0;
+  const src = shot.kind === 'clip' ? `footage/${shot.name}/${String(Math.min(Math.floor(local * 30) + 1, Math.ceil(len * 30))).padStart(4, '0')}.jpg` : shot.src;
+  if (src !== lastSrc && t < V.card + 0.3) { fimg.src = src; lastSrc = src; await fimg.decode().catch(() => {}); }
+  fimg.style.objectPosition = shot.pos || '50% 50%';
+  // corte com chicote vertical + desfoque, e soco de zoom na entrada de cada plano
+  let ty = 0, bl = 0;
+  const idx = V.shots.indexOf(shot), W = 0.08;
+  if (idx > 0 && local < W) { const k = 1 - local / W; ty = 260 * k; bl = 20 * k; }
+  if (idx < V.shots.length - 1 && len - local < W && idx > 0) { const k = 1 - (len - local) / W; ty = -260 * k; bl = 20 * k; }
+  const punch = idx === 0 ? lerp(1.0, 1.12, eInOut(p(t, 0, shot.t1))) : lerp(1.14, 1.04, eOut(p(local, 0, 0.35))) + 0.03 * p(local, 0, len);
+  fimg.style.transform = `translateY(${ty}px) scale(${punch})`;
+  fimg.style.filter = bl > 0.3 ? `blur(${bl}px)` : 'none';
+  tint.style.opacity = idx === 0 ? 1 - 0.85 * p(t, shot.t1 - 0.06, shot.t1) : 0.12;
+  if (t >= V.shots[0].t1) tint.style.opacity = 0.12;
+
+  // cartão turquesa sobe como uma cortina
+  const kc = eOut(p(t, V.card - 0.05, V.card + 0.2));
+  card.style.clipPath = `inset(${100 * (1 - kc)}% 0 0 0)`;
+
+  // câmera: tremida nos impactos e mergulho final
+  let [sx, sy] = [0, 0];
+  for (const e of V.els) if (e.anim === 'slam') { const [a, b] = shake(t, e.at + 0.12, 22); sx += a; sy += b; }
+  let cs = 1 + 0.025 * p(t, V.card, V.dur);
+  if (V.zoomOut) { const kz = p(t, ...V.zoomOut); cs *= lerp(1, 2.6, kz * kz * kz); cam.style.filter = kz > 0.05 ? `blur(${10 * kz * kz}px)` : 'none'; if (t >= V.zoomOut[1]) { cam.style.filter = 'none'; } }
+  if (V.zoomOut && t >= V.zoomOut[1]) cs = 1 + 0.025 * p(t, V.card, V.dur);
+  cam.style.transform = `translate(${sx}px,${sy}px) scale(${cs})`;
+
+  // flash quente curto nos três momentos-chave
+  let fo = 0; for (const f of V.flashes) { const d = t - f; if (d >= 0 && d < 0.3) fo = Math.max(fo, 0.75 * (1 - d / 0.3) ** 2); }
+  flash.style.opacity = fo;
+
+  // pulso no compasso
+  const beatAge = ((t % B) + B) % B, pulse = t > V.card ? Math.exp(-beatAge * 9) : 0;
+
+  for (const { spec, el, words } of nodes) {
+    const at = spec.at ?? 0, out = spec.out;
+    const ko = out != null ? eOut(p(t, out, out + 0.2)) : 0;
+    const vis = t >= at - 1e-6 && ko < 1;
+    if (!vis) { el.style.visibility = 'hidden'; el.style.opacity = 0; continue; }
+    const y = spec.y;
+    if (spec.type) {
+      const k = p(t, at, at + (spec.dur ?? 0.45));
+      if (spec.anim === 'wipe') { place(el, { y, o: 1 }); el.style.clipPath = `inset(0 ${50 * (1 - eOut(k))}% 0 ${50 * (1 - eOut(k))}%)`; }
+      else if (spec.anim === 'pop') place(el, { y: y + 30 * (1 - eOut(k)), s: lerp(0.6, 1, eBack(k)), o: eOut(Math.min(1, k * 2)) });
+      else place(el, { y, o: eOut(k) });
+      continue;
+    }
+    switch (spec.anim) {
+      case 'slam': { // entra grande e bate no lugar
+        const k = p(t, at, at + 0.16);
+        const s = lerp(2.4, 1, eExpo(k)) * (spec.pulse ? 1 + 0.04 * pulse : 1);
+        place(el, { y: y - 30 * ko, s: s * (1 - 0.15 * ko), o: Math.min(1, k * 3) * (1 - ko), blur: 14 * (1 - k) });
+        el.style.backgroundPosition = `${lerp(120, -20, p(t, at + 0.2, at + 0.95))}% 0, 0 0`;
+        break;
+      }
+      case 'pop': {
+        const k = p(t, at, at + 0.35);
+        place(el, { y: y + 24 * (1 - eOut(k)), s: lerp(0.7, 1, eBack(k)), o: Math.min(1, k * 2.5) * (1 - ko) });
+        break;
+      }
+      case 'block': { // faixa turquesa abre da esquerda e as palavras sobem uma a uma
+        const k = eOut(p(t, at, at + 0.22));
+        place(el, { y: y + 20 * ko, o: 1 - ko });
+        el.style.clipPath = `inset(0 ${100 * (1 - k)}% 0 0)`;
+        words.forEach((w, i) => { const kw = eOut(p(t, at + 0.12 + i * 0.07, at + 0.42 + i * 0.07)); w.style.transform = `translateY(${22 * (1 - kw)}px)`; w.style.opacity = kw; });
+        break;
+      }
+      default: {
+        const k = eOut(p(t, at, at + 0.45));
+        place(el, { y: y + 28 * (1 - k) - 16 * ko, o: k * (1 - ko) });
+      }
+    }
+  }
+  const ctx = $('dust');
+  ctx.style.opacity = kc;
+  dust(t, V.bursts || []);
+}
+
+window.render = render;
+window.ready = (async () => {
+  await Promise.all([document.fonts.load('900 100px Cinzel'), document.fonts.load('700 100px Cinzel'), document.fonts.load('600 100px "Cormorant Garamond"'),
+                     document.fonts.load('600 40px Montserrat'), document.fonts.load('700 40px Montserrat')]);
+  build(await keyLogo());
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  await render(0);
+  return true;
+})();
+</script>
+<script src="audio.js"></script>
+</body>
+</html>

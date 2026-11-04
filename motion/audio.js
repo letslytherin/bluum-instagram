@@ -3,7 +3,7 @@
 async function renderAudio() {
   // window.AUDIO_SPEC (opcional) adapta a trilha a outras peças: dur, drums, booms, chimes, whooshes, riser, quietBar
   const S = window.AUDIO_SPEC || {};
-  const SR = 44100, DUR = S.dur || 20, B = 60 / 96;
+  const SR = 44100, DUR = S.dur || 20, B = 60 / (S.bpm || 96);
   const ctx = new OfflineAudioContext(2, SR * DUR, SR);
   const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
 
@@ -136,7 +136,7 @@ async function renderAudio() {
   for (let k = 0; k * B < DUR; k++) {
     const t = k * B;
     if (on.some(f => f(t))) {
-      kick(t);
+      kick(t, S.kick || 0.55);
       noiseHit(t + B / 2, { g: 0.07, dec: 0.06 });
       if (k % 2 === 1) noiseHit(t, { type: 'bandpass', f: 1900, q: 0.8, g: 0.09, dec: 0.14, toRev: true });
     }
@@ -147,7 +147,7 @@ async function renderAudio() {
   (S.chimes || [[84, 0.3, 0.12], [89, 0.3, 0.06], [77, 12.5, 0.14], [84, 12.55, 0.1], [89, 12.6, 0.07], [81, 16.85, 0.08], [84, 17.0, 0.06]])
     .forEach(([m, t, g]) => chime(m, t, g));
   (S.whooshes || [2.42, 4.92, 7.42, 9.92, 15.55]).forEach(t => whoosh(t));
-  (S.riser === null ? [] : [S.riser || [10.5, 12.5]]).forEach(([a, b]) => riser(a, b));
+  (S.risers || (S.riser === null ? [] : [S.riser || [10.5, 12.5]])).forEach(([a, b]) => riser(a, b));
 
   const buf = await ctx.startRendering();
   return encodeWav(buf);

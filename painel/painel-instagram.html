@@ -237,7 +237,7 @@ textarea { resize: vertical; min-height: 70px; }
   <section class="summary" id="summary" aria-label="Resumo"></section>
   <nav class="tabs" aria-label="Seções">
     <div class="tablist" role="tablist" id="tablist">
-      <button role="tab" data-tab="semana">Semana</button>
+      <button role="tab" data-tab="semana">Próximos dias</button>
       <button role="tab" data-tab="calendario">Calendário</button>
       <button role="tab" data-tab="ideias">Ideias</button>
       <button role="tab" data-tab="resultados">Resultados</button>
@@ -284,7 +284,7 @@ const parse = s => { const [y, m, d] = s.split('-').map(Number); return new Date
 const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
 const diffDays = (a, b) => Math.round((parse(a) - parse(b)) / 86400000);
 const monday = s => { const d = parse(s); const w = (d.getDay() + 6) % 7; d.setDate(d.getDate() - w); return iso(d); };
-const TODAY = iso(new Date());
+let TODAY = iso(new Date()); // muda sozinho à meia-noite (ver checkDay)
 const fmtDay = s => { const d = parse(s); return `${WD[d.getDay()]}, ${d.getDate()}/${pad(d.getMonth() + 1)}`; };
 const fmtShort = s => { const d = parse(s); return `${d.getDate()}/${pad(d.getMonth() + 1)}`; };
 
@@ -293,7 +293,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': 
 // ---------- estado ----------
 const S = {
   db: null, ready: false, canWrite: true, posts: [], config: {}, resultados: [],
-  tab: 'semana', week: monday(TODAY), month: TODAY.slice(0, 7), selDay: TODAY,
+  tab: 'semana', week: TODAY, month: TODAY.slice(0, 7), selDay: TODAY,
   open: null, editing: false, settingDate: false, confirmDel: false, resWeek: monday(TODAY),
 };
 try { const t = localStorage.getItem('bluum-tab'); if (t) S.tab = t; } catch (e) {}
@@ -407,15 +407,14 @@ function renderCountdown() {
 }
 
 function renderSummary() {
-  const wk = monday(TODAY);
-  const days = [...Array(7)].map((_, i) => addDays(wk, i));
+  const days = [...Array(7)].map((_, i) => addDays(TODAY, i));
   const weekPosts = S.posts.filter(p => days.includes(effDate(p)));
   const done = weekPosts.filter(p => p.status === 'postado').length;
   const last = [...S.resultados].sort((a, b) => b.id.localeCompare(a.id));
   const val = k => { const r = last.find(r => r[k] != null && r[k] !== ''); return r ? r[k] : null; };
   const vip = val('listaVip'), seg = val('seguidores');
   document.getElementById('summary').innerHTML = `
-    <div class="stat"><div class="k">Esta semana</div><div class="v">${done}<small> de ${weekPosts.length} postados</small></div><div class="bar"><i style="width:${weekPosts.length ? Math.round(done / weekPosts.length * 100) : 0}%"></i></div></div>
+    <div class="stat"><div class="k">Próximos 7 dias</div><div class="v">${done}<small> de ${weekPosts.length} postados</small></div><div class="bar"><i style="width:${weekPosts.length ? Math.round(done / weekPosts.length * 100) : 0}%"></i></div></div>
     <div class="stat"><div class="k">Lista VIP</div><div class="v">${vip != null ? Number(vip).toLocaleString('pt-BR') : '–'}<small> / 150</small></div><div class="bar"><i style="width:${vip ? Math.min(100, vip / 150 * 100) : 0}%"></i></div></div>
     <div class="stat"><div class="k">Seguidores</div><div class="v">${seg != null ? Number(seg).toLocaleString('pt-BR') : '–'}<small> / 500</small></div><div class="bar"><i style="width:${seg ? Math.min(100, seg / 500 * 100) : 0}%"></i></div></div>`;
 }
@@ -430,16 +429,16 @@ function viewSemana() {
   const days = [...Array(7)].map((_, i) => addDays(S.week, i));
   const end = days[6];
   const label = `${fmtShort(S.week)} a ${fmtShort(end)}`;
-  const isThis = S.week === monday(TODAY);
+  const isThis = S.week === TODAY;
   const body = !S.posts.length ? emptyStore() : `<div class="days">${days.map(d => {
     const ps = postsOn(d);
     return `<div class="day"><div class="day-h"><span class="dw">${esc(fmtDay(d))}</span>${d === TODAY ? '<span class="today">Hoje</span>' : ''}${d === S.config.inauguracao ? '<span class="today">Inauguração 🪷</span>' : ''}</div>
       ${ps.length ? ps.map(p => postRow(p, false)).join('') : `<div class="day-empty">Sem post planejado${S.canWrite ? ` · <button type="button" class="btn" style="padding:3px 8px;font-size:12px" data-new="${d}">+ adicionar</button>` : ''}</div>`}</div>`;
   }).join('')}</div>`;
   const pend = S.posts.filter(p => days.includes(effDate(p)) && (p.precisa || []).length && p.status !== 'postado');
-  const todo = pend.length ? `<div class="needs" style="margin-bottom:14px">Para esta semana, falta providenciar:<ul>${[...new Set(pend.flatMap(p => p.precisa))].map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '';
-  return `<div class="sec-head"><h2>${isThis ? 'Esta semana' : 'Semana'} · ${label}</h2>
-    <div class="nav"><button class="icon-btn" data-act="wkPrev" aria-label="Semana anterior">‹</button>${isThis ? '' : '<button class="btn" data-act="wkToday">Hoje</button>'}<button class="icon-btn" data-act="wkNext" aria-label="Próxima semana">›</button></div></div>${todo}${body}`;
+  const todo = pend.length ? `<div class="needs" style="margin-bottom:14px">Para estes dias, falta providenciar:<ul>${[...new Set(pend.flatMap(p => p.precisa))].map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>` : '';
+  return `<div class="sec-head"><h2>${isThis ? 'De hoje em diante' : 'Dias'} · ${label}</h2>
+    <div class="nav"><button class="icon-btn" data-act="wkPrev" aria-label="7 dias antes">‹</button>${isThis ? '' : '<button class="btn" data-act="wkToday">Hoje</button>'}<button class="icon-btn" data-act="wkNext" aria-label="7 dias depois">›</button></div></div>${todo}${body}`;
 }
 
 function viewCalendario() {
@@ -593,6 +592,18 @@ function render() {
   renderSheet();
 }
 
+// ---------- virada do dia: o painel sempre começa em hoje, sem precisar recarregar ----------
+function checkDay() {
+  const now = iso(new Date());
+  if (now === TODAY) return;
+  const old = TODAY; TODAY = now;
+  if (S.week === old || S.week < TODAY) S.week = TODAY;
+  if (S.selDay === old) S.selDay = TODAY;
+  render();
+}
+setInterval(checkDay, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+
 // ---------- eventos ----------
 function openNew(date) {
   const id = createPost(date ? { date, status: 'planejado' } : {});
@@ -619,7 +630,7 @@ document.addEventListener('click', e => {
   switch (t.dataset.act) {
     case 'wkPrev': S.week = addDays(S.week, -7); break;
     case 'wkNext': S.week = addDays(S.week, 7); break;
-    case 'wkToday': S.week = monday(TODAY); break;
+    case 'wkToday': S.week = TODAY; break;
     case 'mPrev': { const [y, m] = S.month.split('-').map(Number); S.month = iso(new Date(y, m - 2, 1)).slice(0, 7); break; }
     case 'mNext': { const [y, m] = S.month.split('-').map(Number); S.month = iso(new Date(y, m, 1)).slice(0, 7); break; }
     case 'setDate': S.settingDate = true; break;
@@ -635,7 +646,7 @@ document.addEventListener('click', e => {
   }
   render();
 });
-document.getElementById('fab').addEventListener('click', () => openNew(S.tab === 'calendario' ? S.selDay : S.tab === 'semana' ? (S.week === monday(TODAY) ? TODAY : S.week) : ''));
+document.getElementById('fab').addEventListener('click', () => openNew(S.tab === 'calendario' ? S.selDay : S.tab === 'semana' ? S.week : ''));
 document.addEventListener('change', e => {
   const p = S.posts.find(x => x.id === S.open);
   if (e.target.dataset.step != null && p) {

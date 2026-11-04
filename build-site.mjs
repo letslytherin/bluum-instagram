@@ -82,7 +82,9 @@ const html = `<!doctype html>
   .aviso { font-size: 14px; color: var(--suave); margin: 18px 0 0; }
   .dia { border-top: 2px solid var(--tinta); margin-top: 36px; padding-top: 6px; }
   .dia.dday h2 { color: var(--ouro); }
-  .dia.passado { opacity: .55; }
+  .dia.passado { display: none; }
+  body.ver-antes .dia.passado { display: block; opacity: .55; }
+  .antes { margin-top: 18px; background: transparent; color: var(--tinta); border: 1px solid var(--tinta); }
   h2 { font: 600 28px/1.2 'Cormorant Garamond', Georgia, serif; margin: 6px 0 4px; text-transform: none; }
   .post { padding: 20px 0; border-bottom: 1px solid var(--fio); }
   .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--suave); }
@@ -122,6 +124,7 @@ const html = `<!doctype html>
 </div></header>
 <main><div class="wrap">
   <p class="aviso">Calendário copiado do painel em ${esc(cal.exportado)}. Se algo mudou no painel, vale o painel. Preço: sempre "a partir de R$ 4,99".</p>
+  <button type="button" class="antes" id="antes" hidden>Ver dias anteriores</button>
   ${body}
   <section class="dia"><h2>Banco de ideias</h2><ul class="ideias">${ideias.map(p => `<li><strong>${esc(p.titulo)}</strong>${p.gancho ? ` · ${esc(p.gancho)}` : ''}</li>`).join('')}</ul></section>
 </div></main>
@@ -129,11 +132,16 @@ const html = `<!doctype html>
 <script>
   // contagem até a inauguração e dias já passados esmaecidos
   const hoje = new Date(); hoje.setHours(12, 0, 0, 0);
+  const pad = n => String(n).padStart(2, '0');
   const dias = Math.round((new Date('${INA}T12:00:00') - hoje) / 864e5);
   document.getElementById('conta').textContent = dias > 1 ? 'Faltam ' + dias + ' dias para a inauguração (sábado, 7 de novembro)'
     : dias === 1 ? 'A inauguração é amanhã, sábado, 7 de novembro' : dias === 0 ? 'Hoje é a inauguração!' : 'Inauguração: sábado, 7 de novembro';
-  const iso = hoje.toISOString().slice(0, 10);
-  document.querySelectorAll('.dia[data-date]').forEach(s => { if (s.dataset.date < iso) s.classList.add('passado'); });
+  const iso = hoje.getFullYear() + '-' + pad(hoje.getMonth() + 1) + '-' + pad(hoje.getDate());
+  // o site começa sempre em hoje; os dias que já passaram ficam escondidos atrás de um botão
+  const passados = [...document.querySelectorAll('.dia[data-date]')].filter(s => s.dataset.date < iso);
+  passados.forEach(s => s.classList.add('passado'));
+  const bt = document.getElementById('antes');
+  if (passados.length) { bt.hidden = false; bt.addEventListener('click', () => { const on = document.body.classList.toggle('ver-antes'); bt.textContent = on ? 'Esconder dias anteriores' : 'Ver dias anteriores'; }); }
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
     const txt = b.closest('.legenda').querySelector('pre').textContent;
     try { await navigator.clipboard.writeText(txt); b.textContent = 'Copiado'; }

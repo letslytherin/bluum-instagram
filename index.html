@@ -23,7 +23,9 @@
   .aviso { font-size: 14px; color: var(--suave); margin: 18px 0 0; }
   .dia { border-top: 2px solid var(--tinta); margin-top: 36px; padding-top: 6px; }
   .dia.dday h2 { color: var(--ouro); }
-  .dia.passado { opacity: .55; }
+  .dia.passado { display: none; }
+  body.ver-antes .dia.passado { display: block; opacity: .55; }
+  .antes { margin-top: 18px; background: transparent; color: var(--tinta); border: 1px solid var(--tinta); }
   h2 { font: 600 28px/1.2 'Cormorant Garamond', Georgia, serif; margin: 6px 0 4px; text-transform: none; }
   .post { padding: 20px 0; border-bottom: 1px solid var(--fio); }
   .meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--suave); }
@@ -62,7 +64,8 @@
   </div>
 </div></header>
 <main><div class="wrap">
-  <p class="aviso">Calendário copiado do painel em 2026-10-30. Se algo mudou no painel, vale o painel. Preço: sempre "a partir de R$ 4,99".</p>
+  <p class="aviso">Calendário copiado do painel em 2026-11-04. Se algo mudou no painel, vale o painel. Preço: sempre "a partir de R$ 4,99".</p>
+  <button type="button" class="antes" id="antes" hidden>Ver dias anteriores</button>
   <section class="dia" data-date="2026-10-30"><h2>sexta, 30 de out</h2><article class="post" id="m01">
     <div class="meta"><span class="n">1</span><span class="hora">19:00</span><span class="fmt">Post no feed</span><span class="st st-pronto">pronto</span></div>
     <h3>Manifesto: Antes de florescer (fixar no perfil)</h3>
@@ -172,41 +175,54 @@ Marca aqui quem mora pertinho e vai com você na inauguração 👯‍♀️
     <p class="falta">Falta: Horário de funcionamento; Formas de pagamento</p>
   </article><article class="post" id="n03">
     <div class="meta"><span class="n">11</span><span class="hora">19:00</span><span class="fmt">Reels</span><span class="st st-pronto">pronto</span></div>
-    <h3>Faltam 3 dias (Reel + Stories)</h3>
-    <div class="media"><figure><video src="motion/out/reels/reel-faltam3.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/reel-faltam3.mp4" download>Baixar reel-faltam3.mp4</a></figcaption></figure><figure><a href="motion/out/posts/story-faltam-3.png"><img src="motion/out/posts/story-faltam-3.png" loading="lazy" alt="Faltam 3 dias (Reel + Stories)"></a><figcaption><a href="motion/out/posts/story-faltam-3.png" download>Baixar story-faltam-3.png</a></figcaption></figure></div>
-    <div class="legenda"><div class="lh"><span>Legenda</span><button type="button" data-copy>Copiar legenda</button></div><pre>Faltam 3 dias 🪷 Já separou o look pro sábado?
-Ativa o lembrete e chama a amiga!
+    <h3>VEM AÍ: Reel da montagem + Stories faltam 3</h3>
+    <div class="media"><figure><video src="motion/out/reels/reel-vemai.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/reel-vemai.mp4" download>Baixar reel-vemai.mp4</a></figcaption></figure><figure><video src="motion/out/reels/story-vemai-faltam3.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/story-vemai-faltam3.mp4" download>Baixar story-vemai-faltam3.mp4</a></figcaption></figure></div>
+    <div class="legenda"><div class="lh"><span>Legenda</span><button type="button" data-copy>Copiar legenda</button></div><pre>VEM AÍ 🪷 A Bluum tá ficando pronta!
+Vitrine montada, prateleiras no lugar… e sábado, 07/11, a porta abre pra você.
 
-#BluumFloresce #inauguracao #olinda</pre></div>
-    <details><summary>Como postar</summary><ul><li>Reel pronto: reel-faltam3.mp4 (8s)</li><li>Stories: story-faltam-3.png + figurinha de contagem regressiva no espaço vazio</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
+💄 Make, cosméticos e acessórios a partir de R$ 4,99
+📍 Estrada de Águas Compridas, 392 · Olinda-PE
+
+Marca aqui quem vai com você no sábado 👯‍♀️
+Segue a @lojabluum e ativa as notificações pra não perder nada.
+
+#BluumFloresce #inauguracao #olinda #recife #maquiagem #achadinhos</pre></div>
+    <details><summary>Como postar</summary><ul><li>Reel pronto: reel-vemai.mp4 (15s, com voz e trilha própria)</li><li>Áudio: manter o som original do vídeo (tem a voz VEM AÍ). Não trocar por música do Instagram</li><li>Capa: quadro do 07/11 (por volta de 9s)</li><li>Marcar localização: Olinda, PE. Depois de postar: repostar nos Stories</li><li>Stories: story-vemai-faltam3.mp4 + figurinha de contagem regressiva para 07/11 no espaço vazio abaixo de &quot;sábado · 07/11&quot;</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
+    
+  </article></section><section class="dia" data-date="2026-11-05"><h2>quinta, 5 de nov</h2><article class="post" id="v05">
+    <div class="meta"><span class="n">12</span><span class="hora">12:00</span><span class="fmt">Stories</span><span class="st st-pronto">pronto</span></div>
+    <h3>Faltam 2 dias (Stories VEM AÍ)</h3>
+    <div class="media"><figure><video src="motion/out/reels/story-vemai-faltam2.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/story-vemai-faltam2.mp4" download>Baixar story-vemai-faltam2.mp4</a></figcaption></figure></div>
+    
+    <details><summary>Como postar</summary><ul><li>Stories: story-vemai-faltam2.mp4 + figurinha de contagem regressiva para 07/11 no espaço vazio</li><li>Repostar o Reel VEM AÍ nos Stories logo depois</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
     
   </article></section><section class="dia" data-date="2026-11-06"><h2>sexta, 6 de nov</h2><article class="post" id="p19">
-    <div class="meta"><span class="n">12</span><span class="hora">19:00</span><span class="fmt">Stories</span><span class="st st-pronto">pronto</span></div>
+    <div class="meta"><span class="n">13</span><span class="hora">19:00</span><span class="fmt">Stories</span><span class="st st-pronto">pronto</span></div>
     <h3>É amanhã!</h3>
-    <div class="media"><figure><a href="motion/out/posts/story-amanha.png"><img src="motion/out/posts/story-amanha.png" loading="lazy" alt="É amanhã!"></a><figcaption><a href="motion/out/posts/story-amanha.png" download>Baixar story-amanha.png</a></figcaption></figure><figure><video src="motion/out/reels/reel-amanha.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/reel-amanha.mp4" download>Baixar reel-amanha.mp4</a></figcaption></figure></div>
+    <div class="media"><figure><video src="motion/out/reels/story-vemai-amanha.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/story-vemai-amanha.mp4" download>Baixar story-vemai-amanha.mp4</a></figcaption></figure><figure><a href="motion/out/posts/story-amanha.png"><img src="motion/out/posts/story-amanha.png" loading="lazy" alt="É amanhã!"></a><figcaption><a href="motion/out/posts/story-amanha.png" download>Baixar story-amanha.png</a></figcaption></figure><figure><video src="motion/out/reels/reel-amanha.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/reel-amanha.mp4" download>Baixar reel-amanha.mp4</a></figcaption></figure></div>
     
-    <details><summary>Como postar</summary><ul><li>Stories: story-amanha.png + figurinha de contagem regressiva</li><li>Reel opcional às 19h: reel-amanha.mp4</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
+    <details><summary>Como postar</summary><ul><li>Stories: story-vemai-amanha.mp4 + figurinha de contagem regressiva (ou a arte parada story-amanha.png)</li><li>Reel opcional às 19h: reel-amanha.mp4</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
     
   </article></section><section class="dia dday" data-date="2026-11-07"><h2>sábado, 7 de nov · inauguração</h2><article class="post" id="n04">
-    <div class="meta"><span class="n">13</span><span class="hora">08:00</span><span class="fmt">Reels</span><span class="st st-pronto">pronto</span></div>
+    <div class="meta"><span class="n">14</span><span class="hora">08:00</span><span class="fmt">Reels</span><span class="st st-pronto">pronto</span></div>
     <h3>É HOJE! (Reel animado, de manhã)</h3>
-    <div class="media"><figure><video src="motion/out/reels/reel-hoje.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/reel-hoje.mp4" download>Baixar reel-hoje.mp4</a></figcaption></figure><figure><a href="motion/out/posts/story-hoje.png"><img src="motion/out/posts/story-hoje.png" loading="lazy" alt="É HOJE! (Reel animado, de manhã)"></a><figcaption><a href="motion/out/posts/story-hoje.png" download>Baixar story-hoje.png</a></figcaption></figure></div>
+    <div class="media"><figure><video src="motion/out/reels/reel-hoje.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/reel-hoje.mp4" download>Baixar reel-hoje.mp4</a></figcaption></figure><figure><video src="motion/out/reels/story-vemai-hoje.mp4" controls preload="metadata" playsinline></video><figcaption><a href="motion/out/reels/story-vemai-hoje.mp4" download>Baixar story-vemai-hoje.mp4</a></figcaption></figure><figure><a href="motion/out/posts/story-hoje.png"><img src="motion/out/posts/story-hoje.png" loading="lazy" alt="É HOJE! (Reel animado, de manhã)"></a><figcaption><a href="motion/out/posts/story-hoje.png" download>Baixar story-hoje.png</a></figcaption></figure></div>
     <div class="legenda"><div class="lh"><span>Legenda</span><button type="button" data-copy>Copiar legenda</button></div><pre>É HOJE! 🪷 A Bluum abre as portas em Olinda.
 📍 Estrada de Águas Compridas, 392
 Vem florescer com a gente!
 
 #BluumFloresce #inauguracao #olinda #recife</pre></div>
-    <details><summary>Como postar</summary><ul><li>Reel pronto: reel-hoje.mp4 (8s)</li><li>Stories: story-hoje.png</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
+    <details><summary>Como postar</summary><ul><li>Reel pronto: reel-hoje.mp4 (8s)</li><li>Stories: story-vemai-hoje.mp4 (voz &quot;É HOJE&quot;) ou a arte parada story-hoje.png</li><li>Mensagem no Canal Bluum VIP</li></ul></details>
     <p class="falta">Falta: Horário de abertura (para colocar na legenda)</p>
   </article><article class="post" id="p20">
-    <div class="meta"><span class="n">14</span><span class="hora">09:00</span><span class="fmt">Stories</span><span class="st st-planejado">planejado</span></div>
+    <div class="meta"><span class="n">15</span><span class="hora">09:00</span><span class="fmt">Stories</span><span class="st st-planejado">planejado</span></div>
     <h3>DIA D: inauguração ao vivo</h3>
     <p class="sem">Sem arte pronta: gravar ou montar na hora.</p>
     
     <details><summary>Como postar</summary><ul><li>Stories de hora em hora: porta abrindo, primeiras clientes (com autorização), produtos</li><li>Live curta (10 a 15 min) no pico de movimento</li><li>Repostar quem marcar a @lojabluum</li><li>Reel do dia à noite (p21)</li></ul></details>
     <p class="falta">Falta: Pessoa responsável pelo celular no dia</p>
   </article><article class="post" id="p21">
-    <div class="meta"><span class="n">15</span><span class="hora">20:00</span><span class="fmt">Reels</span><span class="st st-planejado">planejado</span></div>
+    <div class="meta"><span class="n">16</span><span class="hora">20:00</span><span class="fmt">Reels</span><span class="st st-planejado">planejado</span></div>
     <h3>Reel do dia da inauguração</h3>
     <p class="sem">Sem arte pronta: gravar ou montar na hora.</p>
     <div class="legenda"><div class="lh"><span>Legenda</span><button type="button" data-copy>Copiar legenda</button></div><pre>Obrigada, Olinda 🥹🪷 Hoje a Bluum floresceu.
@@ -215,7 +231,7 @@ Vem florescer com a gente!
     <details><summary>Como postar</summary><ul><li>Juntar os melhores clipes do dia (15 a 20s)</li><li>Só pessoas que autorizaram</li></ul></details>
     
   </article></section><section class="dia" data-date="2026-11-10"><h2>terça, 10 de nov</h2><article class="post" id="p22">
-    <div class="meta"><span class="n">16</span><span class="hora">19:00</span><span class="fmt">Reels</span><span class="st st-planejado">planejado</span></div>
+    <div class="meta"><span class="n">17</span><span class="hora">19:00</span><span class="fmt">Reels</span><span class="st st-planejado">planejado</span></div>
     <h3>Os mais procurados da semana</h3>
     <p class="sem">Sem arte pronta: gravar ou montar na hora.</p>
     <div class="legenda"><div class="lh"><span>Legenda</span><button type="button" data-copy>Copiar legenda</button></div><pre>Já garantiu o seu? 👀
@@ -224,7 +240,7 @@ Vem florescer com a gente!
     <details><summary>Como postar</summary><ul><li>Só os itens que de fato mais venderam (conferir no caixa)</li><li>Preço de cada um na tela</li></ul></details>
     <p class="falta">Falta: Dados de venda da 1ª semana</p>
   </article></section><section class="dia" data-date="2026-11-12"><h2>quinta, 12 de nov</h2><article class="post" id="p14">
-    <div class="meta"><span class="n">17</span><span class="hora">19:00</span><span class="fmt">Reels</span><span class="st st-planejado">planejado</span></div>
+    <div class="meta"><span class="n">18</span><span class="hora">19:00</span><span class="fmt">Reels</span><span class="st st-planejado">planejado</span></div>
     <h3>O que R$ 20 compra na Bluum</h3>
     <p class="sem">Sem arte pronta: gravar ou montar na hora.</p>
     <div class="legenda"><div class="lh"><span>Legenda</span><button type="button" data-copy>Copiar legenda</button></div><pre>R$ 20 e olha tudo isso 😱🛍️
@@ -240,11 +256,16 @@ Qual você tiraria da cesta?
 <script>
   // contagem até a inauguração e dias já passados esmaecidos
   const hoje = new Date(); hoje.setHours(12, 0, 0, 0);
+  const pad = n => String(n).padStart(2, '0');
   const dias = Math.round((new Date('2026-11-07T12:00:00') - hoje) / 864e5);
   document.getElementById('conta').textContent = dias > 1 ? 'Faltam ' + dias + ' dias para a inauguração (sábado, 7 de novembro)'
     : dias === 1 ? 'A inauguração é amanhã, sábado, 7 de novembro' : dias === 0 ? 'Hoje é a inauguração!' : 'Inauguração: sábado, 7 de novembro';
-  const iso = hoje.toISOString().slice(0, 10);
-  document.querySelectorAll('.dia[data-date]').forEach(s => { if (s.dataset.date < iso) s.classList.add('passado'); });
+  const iso = hoje.getFullYear() + '-' + pad(hoje.getMonth() + 1) + '-' + pad(hoje.getDate());
+  // o site começa sempre em hoje; os dias que já passaram ficam escondidos atrás de um botão
+  const passados = [...document.querySelectorAll('.dia[data-date]')].filter(s => s.dataset.date < iso);
+  passados.forEach(s => s.classList.add('passado'));
+  const bt = document.getElementById('antes');
+  if (passados.length) { bt.hidden = false; bt.addEventListener('click', () => { const on = document.body.classList.toggle('ver-antes'); bt.textContent = on ? 'Esconder dias anteriores' : 'Ver dias anteriores'; }); }
   document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async () => {
     const txt = b.closest('.legenda').querySelector('pre').textContent;
     try { await navigator.clipboard.writeText(txt); b.textContent = 'Copiado'; }
