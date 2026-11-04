@@ -75,7 +75,7 @@ mkdirSync(dirname(outFile), { recursive: true });
 // A voz é limpa, comprimida, e a música abaixa sozinha enquanto ela fala (sidechain).
 const VOICES = await page.evaluate(() => window.VOICES || []);
 const voiceIn = VOICES.flatMap(([f]) => ['-i', join(here, f)]);
-const tail = `afade=t=out:st=${DURATION - 1.2}:d=1.2,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000`;
+const tail = `afade=t=out:st=${DURATION - 1.8}:d=1.8,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000`;
 let audioArgs = ['-af', tail, '-map', '0:v', '-map', '1:a'];
 if (VOICES.length) {
   const chains = VOICES.map(([, t, g = 0, echo], i) =>
@@ -83,7 +83,7 @@ if (VOICES.length) {
     `acompressor=threshold=-20dB:ratio=4:attack=5:release=90,equalizer=f=3200:t=q:w=1:g=3,volume=${g}dB` +
     (echo ? ',aecho=0.8:0.55:110|230:0.32|0.16' : '') + `,adelay=${Math.round(t * 1000)}:all=1[v${i}]`);
   const mix = VOICES.length > 1 ? `${VOICES.map((_, i) => `[v${i}]`).join('')}amix=inputs=${VOICES.length}:normalize=0:duration=longest[vox]` : '[v0]anull[vox]';
-  audioArgs = ['-filter_complex', [...chains, mix, '[vox]asplit[vo][vsc]',
+  audioArgs = ['-filter_complex', [...chains, mix, '[vox]apad,asplit[vo][vsc]',
     '[1:a][vsc]sidechaincompress=threshold=0.04:ratio=6:attack=8:release=280[md]',
     `[md][vo]amix=inputs=2:normalize=0:duration=first,${tail}[aout]`].join(';'), '-map', '0:v', '-map', '[aout]'];
 }
