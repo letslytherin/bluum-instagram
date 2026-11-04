@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum · A pitanga indignada</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@500;600;800;900&display=block" rel="stylesheet">
+<link href="brand.css" rel="stylesheet">
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  #cam { position: absolute; inset: 0; transform-origin: 50% 55%; }
+  .scene { position: absolute; inset: 0; }
+  /* loja cara (inventada): cinza frio, vitrine "de luxo" */
+  #sCara { background: linear-gradient(180deg, #d9d4cd 0%, #c9c2b8 62%, #a79e92 62.2%, #b8afa3 100%); }
+  #sCara .plaque { position: absolute; left: 140px; right: 140px; top: 120px; height: 120px; background: #1d1d1f; color: #cfc7b8; display: grid; place-items: center;
+    font: 700 54px Cinzel, serif; letter-spacing: .14em; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .shelf { position: absolute; left: 70px; right: 70px; height: 22px; background: #7c6a58; box-shadow: 0 8px 14px rgba(0,0,0,.18); }
+  .prod { position: absolute; bottom: 22px; border-radius: 6px 6px 2px 2px; }
+  /* Bluum: turquesa da marca */
+  #sBluum, #sFim { background: var(--fundo); }
+  .slat { position: absolute; left: 0; right: 0; height: 6px; background: rgba(255,255,255,.28); }
+  .tag { width: 560px; padding: 26px 30px 30px; background: #fffaf0; border: 6px solid #1d1d1f; border-radius: 22px;
+    text-align: center; box-shadow: 0 18px 40px rgba(0,0,0,.28); }
+  .tag::before { content: ''; position: absolute; left: 50%; top: 16px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: #c9c2b8; border: 5px solid #1d1d1f; }
+  .tag .k { font: 800 44px Montserrat, sans-serif; letter-spacing: .12em; color: #1d1d1f; margin-top: 30px; }
+  .tag .v { font: 900 130px/1 Montserrat, sans-serif; color: #d11a1a; letter-spacing: -.02em; }
+  .boom { font: 900 150px/1 Montserrat, sans-serif; color: #ffd23f; -webkit-text-stroke: 10px #1d1d1f; paint-order: stroke fill; letter-spacing: .02em; }
+  .goldx { font-family: 'Cinzel', serif; font-weight: 900;
+    background-image: linear-gradient(100deg, transparent 38%, rgba(255,255,240,.95) 50%, transparent 62%),
+      linear-gradient(180deg, #fff1b0 0%, #f2cd5b 20%, #c88f1a 46%, #8a5a07 56%, #d9a93d 76%, #fbe39a 100%);
+    background-size: 260% 100%, 100% 100%; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent; padding: .06em .1em; }
+  #cap { position: absolute; left: 70px; right: 70px; top: 1450px; text-align: center; font: 900 66px/1.16 Montserrat, sans-serif; color: #fff;
+    -webkit-text-stroke: 12px #1d1d1f; paint-order: stroke fill; }
+  #cap span { display: inline-block; margin: 0 .12em; }
+  #cap .on { color: #ffd23f; transform: scale(1.08); }
+  #cap.c { color: #fff; }
+  #cap .who { display: block; font-size: 34px; letter-spacing: .2em; -webkit-text-stroke: 8px #1d1d1f; margin-bottom: 6px; }
+  svg.char { position: absolute; left: 0; top: 0; overflow: visible; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cam">
+    <div class="scene" id="sCara">
+      <div class="plaque">BOUTIQUE CARÍSSIMA</div>
+      <div class="shelf" style="top:430px"></div><div class="shelf" style="top:700px"></div>
+    </div>
+    <div class="scene" id="sBluum"></div>
+    <div class="scene" id="sFim"></div>
+    <canvas id="dust" width="1080" height="1920" style="position:absolute;inset:0"></canvas>
+    <div id="chars"></div>
+  </div>
+  <div id="cap"></div>
+</div>
+<script src="brand.js"></script>
+<script>
+// Historinha de frutas (formato que viraliza): a pitanga indignada com os preços de uma loja cara
+// (inventada, sem citar concorrente real) descobre a Bluum pelo caju. Vozes em assets/voz/fruta.
+// O tempo de cada fala vem da duração real do áudio; a boca abre com o volume da voz.
+const LINES = [
+  { who: 'P', f: '01', cap: 'OXE! R$ 89,90 num BATOM?!', emo: 'raiva', gap: 0.25 },
+  { who: 'P', f: '02', cap: 'E esse BRINCO a 60 conto? Tá doido, é?', emo: 'raiva', gap: 0.3 },
+  { who: 'C', f: '03', cap: 'Mulher, tu ainda não conhece a BLUUM?', gap: 0.35 },
+  { who: 'P', f: '04', cap: 'BLUUM?', emo: 'duvida', gap: 0.2 },
+  { who: 'C', f: '05', cap: 'Make, cosmético e acessório A PARTIR DE R$ 4,99!', gap: 0.55 },
+  { who: 'P', f: '06', cap: 'R$ 4,99?! Vou levar é TUDO!', emo: 'brilho', gap: 0.25 },
+  { who: 'C', f: '07', cap: 'Inauguração SÁBADO, 07/11, em Olinda!', gap: 0.5 },
+  { who: 'P', f: '08', cap: 'VEM AÍ!', emo: 'feliz', gap: 0.15 },
+];
+const FPS = 30;
+const $ = id => document.getElementById(id);
+const cam = $('cam');
+
+// ---------------- personagens (SVG) ----------------
+function lobed(r0, n, amp, sy = 0.93) {
+  let d = '';
+  for (let i = 0; i <= 96; i++) { const a = i / 96 * Math.PI * 2, r = r0 * (1 + amp * Math.cos(n * a)); d += (i ? 'L' : 'M') + (r * Math.sin(a)).toFixed(1) + ',' + (-r * Math.cos(a) * sy).toFixed(1); }
+  return d + 'Z';
+}
+function face(id) {
+  const eye = s => `<g id="${id}eye${s}" transform="translate(${s * 44},-12)"><g class="lid"><ellipse rx="27" ry="31" fill="#fff" stroke="#2a1414" stroke-width="5"/>
+      <g class="pup"><circle r="14" fill="#2a1414"/><circle cx="-5" cy="-6" r="5" fill="#fff"/></g>
+      <path class="star" d="M0,-20 L6,-6 L20,-6 L9,3 L13,18 L0,9 L-13,18 L-9,3 L-20,-6 L-6,-6Z" fill="#f2c94c" stroke="#a8770f" stroke-width="3" opacity="0"/></g></g>`;
+  return `${eye(-1)}${eye(1)}
+    <rect id="${id}browL" x="-24" y="-6" width="48" height="12" rx="6" fill="#2a1414"/>
+    <rect id="${id}browR" x="-24" y="-6" width="48" height="12" rx="6" fill="#2a1414"/>
+    <ellipse cx="-74" cy="30" rx="18" ry="11" fill="#ff8fa3" opacity=".7"/><ellipse cx="74" cy="30" rx="18" ry="11" fill="#ff8fa3" opacity=".7"/>
+    <g transform="translate(0,46)"><ellipse id="${id}mo" rx="24" ry="4" fill="#5a0f12" stroke="#2a1414" stroke-width="5"/>
+      <path id="${id}mi" d="" fill="none" stroke="#2a1414" stroke-width="7" stroke-linecap="round"/></g>`;
+}
+function limbs(id) {
+  return `<path id="${id}armL" fill="none" stroke="#2a1414" stroke-width="10" stroke-linecap="round"/><path id="${id}armR" fill="none" stroke="#2a1414" stroke-width="10" stroke-linecap="round"/>
+    <circle id="${id}hL" r="16" fill="#fff" stroke="#2a1414" stroke-width="5"/><circle id="${id}hR" r="16" fill="#fff" stroke="#2a1414" stroke-width="5"/>`;
+}
+const CHAR = {
+  P: { // pitanga: gomos, vermelho-alaranjado, folhinhas verdes
+    w: 300, shoulder: [112, 10], hip: 128,
+    svg: `<defs><radialGradient id="gP" cx=".38" cy=".3" r=".8"><stop offset="0" stop-color="#ff8a5c"/><stop offset=".45" stop-color="#f0402a"/><stop offset="1" stop-color="#b3121a"/></radialGradient></defs>
+      <g id="Plegs"><path d="M-38,112 L-42,170 M38,112 L42,170" stroke="#2a1414" stroke-width="10" stroke-linecap="round"/><ellipse cx="-50" cy="176" rx="26" ry="12" fill="#2a1414"/><ellipse cx="50" cy="176" rx="26" ry="12" fill="#2a1414"/></g>
+      <path d="${lobed(128, 8, 0.065)}" fill="url(#gP)" stroke="#7a0d12" stroke-width="5"/>
+      ${[-100, -58, -20, 20, 58, 100].map(dx => `<path d="M0,-112 Q${dx},0 0,114" fill="none" stroke="rgba(100,0,10,.42)" stroke-width="6"/>`).join('')}
+      <ellipse cx="-50" cy="-70" rx="30" ry="16" fill="#fff" opacity=".28" transform="rotate(-30 -50 -70)"/>
+      <g transform="translate(0,-110)">${[0, 90, 180, 270].map(a => `<ellipse rx="6" ry="14" cy="-8" fill="#6b8a2e" stroke="#3d5418" stroke-width="3" transform="rotate(${a + 45})"/>`).join('')}<path d="M0,-6 L4,-30" stroke="#5b4320" stroke-width="7" stroke-linecap="round"/></g>`,
+  },
+  C: { // caju: fruto em pera amarelo-vermelho com a castanha de chapéu
+    w: 300, shoulder: [104, 20], hip: 128,
+    svg: `<defs><linearGradient id="gC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe066"/><stop offset=".5" stop-color="#f7a32b"/><stop offset="1" stop-color="#e2452a"/></linearGradient></defs>
+      <g><path d="M-38,122 L-42,172 M38,122 L42,172" stroke="#2a1414" stroke-width="10" stroke-linecap="round"/><ellipse cx="-50" cy="178" rx="26" ry="12" fill="#2a1414"/><ellipse cx="50" cy="178" rx="26" ry="12" fill="#2a1414"/></g>
+      <path d="M0,-118 C72,-118 96,-58 102,2 C110,82 70,132 0,132 C-70,132 -110,82 -102,2 C-96,-58 -72,-118 0,-118Z" fill="url(#gC)" stroke="#9a3a12" stroke-width="5"/>
+      <ellipse cx="-46" cy="-62" rx="26" ry="14" fill="#fff" opacity=".35" transform="rotate(-30 -46 -62)"/>
+      <g transform="translate(14,-138) rotate(-14)"><path d="M-62,4 C-70,-42 -4,-60 30,-44 C64,-30 66,10 42,20 C26,26 14,8 -2,10 C-22,12 -54,34 -62,4Z" fill="#c9a77c" stroke="#7a5a35" stroke-width="5"/>
+        <path d="M-40,-10 C-20,-30 10,-34 30,-26" fill="none" stroke="#e6cfa8" stroke-width="5" stroke-linecap="round"/></g>`,
+  },
+};
+function makeChar(k) {
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  g.setAttribute('class', 'char'); g.setAttribute('width', '1'); g.setAttribute('height', '1');
+  g.innerHTML = `<g id="${k}root"><g id="${k}body">${limbs(k)}${CHAR[k].svg}<g id="${k}face">${face(k)}</g></g></g>`;
+  $('chars').appendChild(g);
+  const q = s => g.querySelector('#' + k + s);
+  return { k, root: q('root'), body: q('body'), face: q('face'), eyes: [q('eye-1'), q('eye1')], browL: q('browL'), browR: q('browR'), mo: q('mo'), mi: q('mi'),
+           armL: q('armL'), armR: q('armR'), hL: q('hL'), hR: q('hR') };
+}
+
+// expressão: [sobrancelha y, rotação esq, rotação dir, boca parada, olho escala]
+const EMO = {
+  raiva:   { by: -50, rl: 24, rr: -24, idle: 'M-26,10 Q0,-12 26,10', es: 1.0 },
+  duvida:  { by: -56, rl: -6, rr: 18, idle: 'M-20,4 Q2,-2 22,6', es: 1.05 },
+  surpresa:{ by: -70, rl: -10, rr: 10, idle: 'o', es: 1.18 },
+  brilho:  { by: -70, rl: -12, rr: 12, idle: 'M-34,-6 Q0,34 34,-6', es: 1.15 },
+  feliz:   { by: -62, rl: -6, rr: 6, idle: 'M-30,-4 Q0,26 30,-4', es: 1.0 },
+};
+
+function drawChar(c, t, { x, y, s, emo, env, talking, pose, look = 0, sh = [0, 0] }) {
+  const e = EMO[emo];
+  const bob = talking ? -Math.abs(Math.sin(t * 9)) * 10 : Math.sin(t * 2.4 + (c.k === 'C' ? 1.3 : 0)) * 4;
+  const sq = 1 + (talking ? 0.025 * Math.sin(t * 18) : 0.012 * Math.sin(t * 2.4));
+  c.root.setAttribute('transform', `translate(${x + sh[0]},${y + bob + sh[1]}) scale(${s})`);
+  c.body.setAttribute('transform', `scale(${1 / sq},${sq}) rotate(${talking ? Math.sin(t * 5) * 2.5 : 0})`);
+  // olhos: piscam a cada ~2,8 s e olham para o lado
+  const ph = (t + (c.k === 'C' ? 1.1 : 0)) % 2.8, blink = ph < 0.13 ? 0.12 : 1;
+  c.eyes.forEach(ey => {
+    ey.querySelector('.lid').setAttribute('transform', `scale(${e.es},${e.es * blink})`);
+    ey.querySelector('.pup').setAttribute('transform', `translate(${look * 9},0)`);
+    const star = emo === 'brilho';
+    ey.querySelector('.pup').setAttribute('opacity', star ? 0 : 1);
+    ey.querySelector('.star').setAttribute('opacity', star ? 1 : 0);
+    ey.querySelector('.star').setAttribute('transform', `rotate(${t * 90}) scale(${1 + 0.15 * Math.sin(t * 10)})`);
+  });
+  c.browL.setAttribute('transform', `translate(-44,${e.by + (talking ? -4 * env : 0)}) rotate(${e.rl})`);
+  c.browR.setAttribute('transform', `translate(44,${e.by + (talking ? -4 * env : 0)}) rotate(${e.rr})`);
+  // boca: abre com o volume da voz; parada mostra a expressão
+  const open = talking && env > 0.04;
+  c.mo.setAttribute('ry', open ? 4 + 30 * env : (e.idle === 'o' ? 14 : 0.01));
+  c.mo.setAttribute('rx', open ? 22 + 8 * env : (e.idle === 'o' ? 14 : 0.01));
+  c.mi.setAttribute('d', open || e.idle === 'o' ? '' : e.idle);
+  // braços por pose
+  const [sx, sy] = CHAR[c.k].shoulder, w = Math.sin(t * 7);
+  const P = {
+    aponta:  [[-122, 70], [158, -96 + 8 * w]],
+    cintura: [[-124, 66], [124, 66]],
+    fala:    [[-150, 10 + 16 * w], [150, -10 - 16 * w]],
+    alto:    [[-150, -120 + 14 * w], [150, -120 - 14 * w]],
+    baixo:   [[-128, 92], [128, 92]],
+  }[pose];
+  const arm = (el, h, side, [hx, hy]) => {
+    el.setAttribute('d', `M${side * sx},${sy} Q${side * (sx + 30)},${(sy + hy) / 2 + 20} ${hx},${hy}`);
+    h.setAttribute('cx', hx); h.setAttribute('cy', hy);
+  };
+  arm(c.armL, c.hL, -1, P[0]); arm(c.armR, c.hR, 1, P[1]);
+}
+
+// ---------------- cenários ----------------
+function buildScenes(logo) {
+  const sc = $('sCara');
+  // produtos genéricos na loja cara
+  const prods = [[110, 430, 40, 90, '#8c1d2a'], [175, 430, 40, 110, '#b23a48'], [250, 430, 70, 120, '#3b3b3b'], [360, 430, 60, 80, '#d8c3a5'],
+                 [720, 430, 50, 100, '#8c1d2a'], [790, 430, 80, 130, '#2e2e33'], [900, 430, 50, 90, '#c9a77c'],
+                 [120, 700, 90, 90, '#d8c3a5'], [240, 700, 60, 140, '#2e2e33'], [780, 700, 70, 110, '#b23a48'], [880, 700, 90, 80, '#3b3b3b']];
+  prods.forEach(([x, top, w, h, col]) => sc.insertAdjacentHTML('beforeend', `<div class="prod" style="left:${x}px;top:${top - h}px;width:${w}px;height:${h}px;background:${col}"></div>`));
+  const sb = $('sBluum');
+  for (let y = 300; y < 1100; y += 46) sb.insertAdjacentHTML('beforeend', `<div class="slat" style="top:${y}px"></div>`);
+  const cols = ['#e2557a', '#f2c94c', '#ffffff', '#c24a6e', '#8fd3cb', '#f08a6c', '#fbe39a'];
+  for (let i = 0; i < 26; i++) {
+    const x = 60 + (i % 13) * 76, y = i < 13 ? 840 : 1010, h = 40 + ((i * 37) % 50);
+    sb.insertAdjacentHTML('beforeend', `<div style="position:absolute;left:${x}px;top:${y - h}px;width:44px;height:${h}px;background:${cols[i % cols.length]};border-radius:8px 8px 3px 3px;box-shadow:0 4px 0 rgba(13,76,70,.15)"></div>`);
+  }
+  sb.insertAdjacentHTML('beforeend', `<div style="position:absolute;left:40px;right:40px;top:846px;height:16px;background:#fff"></div><div style="position:absolute;left:40px;right:40px;top:1016px;height:16px;background:#fff"></div>`);
+}
+
+const EL = {};
+function mk(id, html, cls = 'a', parent = cam) { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; parent.appendChild(d); EL[id] = d; return d; }
+
+let T = {}, ENV = {}, P, C, dust;
+window.FPS = FPS;
+window.ready = (async () => {
+  await Promise.all([document.fonts.load('900 100px Cinzel'), document.fonts.load('900 60px Montserrat'), document.fonts.load('800 40px Montserrat'), document.fonts.load('700 50px Cinzel')]);
+  // vozes: duração real e envelope para a boca
+  const ac = new OfflineAudioContext(1, 44100, 44100);
+  let cur = 0;
+  for (const L of LINES) {
+    const buf = await ac.decodeAudioData(await (await fetch(`assets/voz/fruta/${L.f}.mp3`)).arrayBuffer());
+    const d = buf.getChannelData(0), sr = buf.sampleRate, th = 0.0056;
+    let a = 0, b = d.length - 1;
+    while (a < d.length && Math.abs(d[a]) < th) a++;
+    while (b > a && Math.abs(d[b]) < th) b--;
+    const step = Math.round(sr / FPS), env = [];
+    for (let i = a; i < b; i += step) { let s = 0; for (let j = i; j < Math.min(b, i + step); j++) s += d[j] * d[j]; env.push(Math.sqrt(s / step)); }
+    const mx = Math.max(...env); L.env = env.map(v => Math.min(1, v / (mx * 0.75)));
+    L.t0 = cur + L.gap; L.t1 = L.t0 + (b - a) / sr; cur = L.t1;
+  }
+  const S = LINES;
+  T = { bluum: S[4].t0 - 0.45, fim: S[6].t0 - 0.4, end: S[7].t1 + 2.0 };
+  window.DURATION = Math.ceil(T.end * 10) / 10;
+  window.VOICES = S.map(L => [`assets/voz/fruta/${L.f}.mp3`, L.t0, L.who === 'P' ? 3 : 2, false]);
+  const B = 60 / 112;
+  window.AUDIO_SPEC = { bpm: 112, dur: window.DURATION, kick: 0.45, drums: [[0.1, T.fim - 0.2], [T.fim + 0.2, T.end - 1]], quietBar: -1, risers: [],
+    booms: [[S[0].t0, 0.5], [S[1].t0, 0.4], [T.bluum + 0.45, 0.5], [S[5].t0, 0.4], [T.fim + 0.4, 0.5], [S[7].t0, 0.5]],
+    whooshes: [S[1].t0 - 0.25, T.bluum - 0.1, T.fim - 0.1],
+    chimes: [[84, T.bluum + 0.5, 0.1], [89, T.bluum + 0.55, 0.07], [88, S[4].t0 + 0.62 * (S[4].t1 - S[4].t0), 0.1], [93, S[5].t0 + 0.1, 0.08], [96, S[5].t0 + 0.25, 0.06], [77, T.fim + 0.4, 0.1], [84, T.fim + 0.45, 0.08]] };
+
+  const logo = await keyLogo();
+  buildScenes(logo);
+  // etiquetas da loja cara e textos
+  mk('tag1', `<div class="k">BATOM</div><div class="v">R$ 89,90</div>`, 'a tag');
+  mk('tag2', `<div class="k">BRINCO</div><div class="v">R$ 59,90</div>`, 'a tag');
+  mk('oxe', 'OXE!', 'a boom');
+  mk('lotusB', `<img src="${logo.lotus.url}" style="width:220px;display:block">`);
+  mk('wordB', `<img src="${logo.word.url}" style="width:760px;display:block">`);
+  mk('apartir', 'a partir de', 'a mont ink');
+  EL.apartir.style.cssText += 'font-size:52px;font-weight:600';
+  mk('preco', 'R$ 4,99', 'a goldx');
+  EL.preco.style.fontSize = '230px';
+  mk('lotusF', `<img src="${logo.lotus.url}" style="width:300px;display:block">`);
+  mk('wordF', `<img src="${logo.word.url}" style="width:900px;display:block">`);
+  mk('tagF', `<img src="${logo.tag.url}" style="width:760px;display:block">`);
+  mk('dataF', 'SÁBADO · 07/11', 'a ink9');
+  EL.dataF.style.cssText += "font:900 96px Cinzel,serif;color:#0d4c46";
+  mk('endF', 'Estrada de Águas Compridas, 392 · Olinda', 'a mont ink');
+  EL.endF.style.cssText += 'font-size:38px;font-weight:600';
+  mk('arrobaF', '@lojabluum', 'a mont ink');
+  EL.arrobaF.style.cssText += 'font-size:44px;font-weight:800';
+  mk('vemF', 'VEM AÍ!', 'a goldx');
+  EL.vemF.style.fontSize = '150px';
+  P = makeChar('P'); C = makeChar('C');
+  $('chars').appendChild($('chars').firstChild); // pitanga na frente
+  dust = makeParticles($('dust'), { count: 50, seed: 5 });
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  render(0);
+  return true;
+})();
+
+const lineAt = t => LINES.find(L => t >= L.t0 && t < L.t1);
+const envAt = (L, t) => { if (!L) return 0; const i = (t - L.t0) * FPS, a = L.env[Math.floor(i)] || 0, b = L.env[Math.ceil(i)] || 0; return lerp(a, b, i % 1); };
+const shakeAt = (t, t0, amp, dur = 0.4) => { const d = t - t0; if (d < 0 || d > dur) return [0, 0]; const k = amp * Math.exp(-d * 9); return [Math.sin(d * 91) * k, Math.cos(d * 77) * k]; };
+const show = (el, o) => { el.style.opacity = o; el.style.visibility = o <= 0.001 ? 'hidden' : 'visible'; };
+function slamIn(el, t, at, out, { x = 540, y = 960, r = 0, s0 = 2.2 } = {}) {
+  const k = p(t, at, at + 0.18), ko = out != null ? p(t, out, out + 0.18) : 0;
+  if (t < at || ko >= 1) { show(el, 0); return; }
+  place(el, { x, y: y - 40 * ko, r, s: lerp(s0, 1, eExpo(k)) * (1 - 0.2 * ko), o: Math.min(1, k * 3) * (1 - ko) });
+}
+function riseIn(el, t, at, y, x = 540) { const k = eOut(p(t, at, at + 0.4)); if (t < at) return show(el, 0); place(el, { x, y: y + 30 * (1 - k), o: k }); }
+
+function render(t) {
+  const S = LINES, L = lineAt(t);
+  const scene = t < T.bluum ? 'cara' : t < T.fim ? 'bluum' : 'fim';
+  // cortina entre cenas: a nova cena entra de baixo pra cima
+  const kb = eOut(p(t, T.bluum, T.bluum + 0.3)), kf = eOut(p(t, T.fim, T.fim + 0.3));
+  $('sBluum').style.clipPath = `inset(${100 * (1 - kb)}% 0 0 0)`;
+  $('sFim').style.clipPath = `inset(${100 * (1 - kf)}% 0 0 0)`;
+
+  // câmera: soco de zoom nas reações e tremida na indignação
+  let z = 1, sh = [0, 0];
+  for (const i of [0, 1]) { z += 0.12 * Math.exp(-Math.max(0, t - S[i].t0) * 4) * (t >= S[i].t0 ? 1 : 0); const s2 = shakeAt(t, S[i].t0, 18); sh[0] += s2[0]; sh[1] += s2[1]; }
+  z += 0.1 * Math.exp(-Math.max(0, t - S[5].t0) * 4) * (t >= S[5].t0 ? 1 : 0);
+  cam.style.transform = `translate(${sh[0]}px,${sh[1]}px) scale(${z})`;
+
+  // --- loja cara ---
+  slamIn(EL.oxe, t, S[0].t0, S[0].t0 + 1.1, { x: 300, y: 760, r: -10 });
+  slamIn(EL.tag1, t, S[0].t0 + 0.35, S[1].t0 - 0.05, { x: 600, y: 560, r: 5 });
+  slamIn(EL.tag2, t, S[1].t0, S[2].t0, { x: 560, y: 560, r: -5 });
+  // --- Bluum ---
+  const inB = scene === 'bluum';
+  if (inB) {
+    riseIn(EL.lotusB, t, T.bluum + 0.25, 200); riseIn(EL.wordB, t, T.bluum + 0.4, 360);
+    const kp = S[4].t0 + 0.55 * (S[4].t1 - S[4].t0);
+    riseIn(EL.apartir, t, kp - 0.35, 500);
+    slamIn(EL.preco, t, kp, null, { y: 650 });
+    EL.preco.style.backgroundPosition = `${lerp(120, -20, p(t, kp + 0.2, kp + 1))}% 0, 0 0`;
+  } else ['lotusB', 'wordB', 'apartir', 'preco'].forEach(k => show(EL[k], 0));
+  // --- final ---
+  if (scene === 'fim') {
+    riseIn(EL.lotusF, t, T.fim + 0.3, 250); riseIn(EL.wordF, t, T.fim + 0.45, 470); riseIn(EL.tagF, t, T.fim + 0.6, 590);
+    slamIn(EL.dataF, t, S[6].t0 + 0.9, null, { y: 760 }); riseIn(EL.endF, t, S[6].t0 + 1.6, 870); riseIn(EL.arrobaF, t, S[6].t1, 940);
+    slamIn(EL.vemF, t, S[7].t0, null, { y: 1080 });
+    EL.vemF.style.backgroundPosition = `${lerp(120, -20, p(t, S[7].t0 + 0.2, S[7].t0 + 1))}% 0, 0 0`;
+  } else ['lotusF', 'wordF', 'tagF', 'dataF', 'endF', 'arrobaF', 'vemF'].forEach(k => show(EL[k], 0));
+  $('dust').style.opacity = scene === 'cara' ? 0 : 1;
+  dust(t, [[T.bluum + 0.5, 540, 700], [S[5].t0 + 0.1, 380, 1150], [T.fim + 0.4, 540, 420]]);
+
+  // --- personagens ---
+  const cajuIn = eOut(p(t, S[2].t0 - 0.7, S[2].t0 - 0.1));
+  const pX = scene === 'fim' ? 360 : lerp(540, 350, cajuIn), cX = scene === 'fim' ? 730 : lerp(1400, 760, cajuIn);
+  const yy = scene === 'fim' ? 1345 : 1160, ss = scene === 'fim' ? 0.88 : 1.12;
+  let pEmo = t < S[2].t0 ? 'raiva' : t < S[3].t0 ? 'surpresa' : t < S[4].t0 ? 'duvida' : t < S[4].t0 + 0.55 * (S[4].t1 - S[4].t0) ? 'surpresa' : t < T.fim ? 'brilho' : 'feliz';
+  const pPose = t < S[1].t0 ? (L === S[0] ? 'aponta' : 'cintura') : t < S[2].t0 ? 'aponta' : t < S[4].t0 ? 'cintura' : t < S[5].t0 ? 'baixo' : 'alto';
+  const pTalk = L && L.who === 'P', cTalk = L && L.who === 'C';
+  const pSh = t < S[2].t0 && pTalk ? [Math.sin(t * 60) * 5 * envAt(L, t), 0] : [0, 0];
+  drawChar(P, t, { x: pX, y: yy, s: ss, emo: pEmo, env: pTalk ? envAt(L, t) : 0, talking: pTalk, pose: pPose, look: t < S[2].t0 ? 1 : 1, sh: pSh });
+  drawChar(C, t, { x: cX, y: yy + 6, s: ss, emo: 'feliz', env: cTalk ? envAt(L, t) : 0, talking: cTalk, pose: cTalk ? 'fala' : 'baixo', look: -1 });
+
+  // --- legenda estilo viral: palavra atual em amarelo ---
+  const cap = $('cap');
+  const CL = L || [...LINES].reverse().find(x => t >= x.t1 && t < x.t1 + 0.35);
+  if (!CL) { cap.innerHTML = ''; return; }
+  const words = CL.cap.split(' '), tot = words.reduce((a, w) => a + w.length + 1, 0);
+  let acc = 0; const k = p(t, CL.t0, CL.t1) * tot;
+  cap.innerHTML = `<span class="who" style="color:${CL.who === 'P' ? '#ff8a6a' : '#ffd23f'}">${CL.who === 'P' ? 'PITANGA' : 'CAJU'}</span>` +
+    words.map(w => { const a = acc; acc += w.length + 1; return `<span class="${k >= a && k < acc ? 'on' : ''}" style="opacity:${k >= a - 0.5 || t >= CL.t1 ? 1 : 0}">${w}</span>`; }).join(' ');
+}
+window.render = render;
+</script>
+<script src="audio.js"></script>
+</body>
+</html>

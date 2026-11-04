@@ -837,6 +837,31 @@
    ],
    "status": "pronto",
    "titulo": "Faltam 2 dias (Stories VEM AÍ)"
+  },
+  {
+   "id": "v06",
+   "criado": "2026-11-04T13:30:00Z",
+   "date": null,
+   "rel": -2,
+   "hora": "19:00",
+   "formato": "reels",
+   "pilar": "lancamento",
+   "status": "pronto",
+   "titulo": "Historinha: a Pitanga que floresceu (Reel animado)",
+   "gancho": "Pitanga triste na loja cara: \"R$ 89,90 num batom? Não dá...\"",
+   "objetivo": "Formato de historinha de fruta, que viraliza, para alcançar quem não segue e fixar o \"a partir de R$ 4,99\".",
+   "roteiro": [
+    "Reel pronto: motion/out/reels/reel-pitanga-floresceu.mp4 (30s, com vozes, legenda e trilha)",
+    "Áudio: manter o som original do vídeo (tem as vozes)",
+    "Capa: quadro da pitanga com sacolas e o R$ 4,99 (por volta de 23s)",
+    "Marcar localização: Olinda, PE. Depois de postar: repostar nos Stories",
+    "Versão 1 (opcional, para outro dia): motion/out/reels/reel-pitanga-indignada.mp4"
+   ],
+   "legenda": "A Pitanga só queria se sentir mais bonita... 🥺\naté encontrar a Bluum 🪷\n\nMake, cosméticos e acessórios a partir de R$ 4,99 💄\nInauguração: sábado, 07/11\n📍 Estrada de Águas Compridas, 392 · Olinda\n\nManda pra amiga que também é uma Pitanga 😂",
+   "hashtags": "#BluumFloresce #olinda #recife #maquiagem #achadinhos",
+   "precisa": [],
+   "feitos": [],
+   "notas": "Lojas caras inventadas; não citar concorrente real."
   }
  ]
 }

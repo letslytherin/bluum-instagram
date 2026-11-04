@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum · A pitanga que floresceu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@500;600;800;900&display=block" rel="stylesheet">
+<link href="brand.css" rel="stylesheet">
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  #cam { position: absolute; inset: 0; transform-origin: 50% 55%; }
+  .scene { position: absolute; inset: 0; overflow: hidden; }
+  /* lojas caras (inventadas): frias e meio apagadas, pra contrastar com a Bluum */
+  .store .plaque { position: absolute; left: 120px; right: 120px; top: 150px; height: 124px; display: grid; place-items: center;
+    font: 700 54px Cinzel, serif; letter-spacing: .12em; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+  .store .floor { position: absolute; left: 0; right: 0; top: 1190px; bottom: 0; }
+  .shelf { position: absolute; left: 70px; right: 70px; height: 22px; background: #6f655b; box-shadow: 0 8px 14px rgba(0,0,0,.18); }
+  .prod { position: absolute; border-radius: 6px 6px 2px 2px; }
+  .gloom { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 60%, rgba(30,40,60,0) 30%, rgba(30,40,60,.38)); }
+  .tag { width: 560px; padding: 26px 30px 30px; background: #fffaf0; border: 6px solid #1d1d1f; border-radius: 22px; text-align: center; box-shadow: 0 18px 40px rgba(0,0,0,.28); }
+  .tag::before { content: ''; position: absolute; left: 50%; top: 16px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: #c9c2b8; border: 5px solid #1d1d1f; }
+  .tag .k { font: 800 42px Montserrat, sans-serif; letter-spacing: .12em; color: #1d1d1f; margin-top: 30px; }
+  .tag .v { font: 900 120px/1 Montserrat, sans-serif; color: #d11a1a; letter-spacing: -.02em; }
+  .bluum { background: var(--fundo); }
+  .slat { position: absolute; left: 0; right: 0; height: 6px; background: rgba(255,255,255,.28); }
+  .goldx { font-family: 'Cinzel', serif; font-weight: 900;
+    background-image: linear-gradient(100deg, transparent 38%, rgba(255,255,240,.95) 50%, transparent 62%),
+      linear-gradient(180deg, #fff1b0 0%, #f2cd5b 20%, #c88f1a 46%, #8a5a07 56%, #d9a93d 76%, #fbe39a 100%);
+    background-size: 260% 100%, 100% 100%; background-repeat: no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent; padding: .06em .1em; }
+  .boom { font: 900 120px/1 Montserrat, sans-serif; color: #ffd23f; -webkit-text-stroke: 10px #1d1d1f; paint-order: stroke fill; }
+  #cap { position: absolute; left: 70px; right: 70px; top: 1470px; text-align: center; font: 900 64px/1.16 Montserrat, sans-serif; color: #fff;
+    -webkit-text-stroke: 12px #1d1d1f; paint-order: stroke fill; }
+  #cap span { display: inline-block; margin: 0 .12em; }
+  #cap .on { color: #ffd23f; transform: scale(1.08); }
+  #cap .who { display: block; font-size: 34px; letter-spacing: .2em; -webkit-text-stroke: 8px #1d1d1f; margin-bottom: 6px; }
+  #cap.narr { font-style: italic; }
+  svg.char { position: absolute; left: 0; top: 0; overflow: visible; }
+  #cloud { position: absolute; left: 0; top: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="cam">
+    <div id="scenes"></div>
+    <canvas id="dust" width="1080" height="1920" style="position:absolute;inset:0"></canvas>
+    <div id="chars"></div>
+  </div>
+  <div id="cap"></div>
+</div>
+<script src="brand.js"></script>
+<script src="frutas.js"></script>
+<script>
+// A pitanga triste não consegue comprar nada em três lojas caras (inventadas), encontra a Bluum,
+// descobre o "a partir de R$ 4,99", compra e sai renovada. Vozes em assets/voz/historia.
+const LINES = [
+  { id: 'n1', who: 'N', cap: 'A Pitanga só queria se sentir mais bonita...', gap: 0.5 },
+  { id: 'p1', who: 'P', cap: 'R$ 89,90 num batom? Não dá...', gap: 0.3 },
+  { id: 'p2', who: 'P', cap: 'R$ 60 num brinco...', gap: 1.0 },
+  { id: 'p3', who: 'P', cap: 'Nada pra mim hoje...', gap: 1.0 },
+  { id: 'n2', who: 'N', cap: 'Até que ela encontrou a BLUUM.', gap: 0.9 },
+  { id: 'c1', who: 'C', cap: 'Seja bem-vinda! Aqui é tudo A PARTIR DE R$ 4,99!', gap: 0.8 },
+  { id: 'p4', who: 'P', cap: 'R$ 4,99?!', gap: 0.25 },
+  { id: 'p5', who: 'P', cap: 'Gente, me sinto OUTRA FRUTA!', gap: 2.7 },
+  { id: 'n3', who: 'N', cap: 'BLUUM. Inauguração sábado, 07/11, em Olinda. VEM AÍ!', gap: 0.6 },
+];
+const FPS = 30;
+const $ = id => document.getElementById(id);
+const cam = $('cam');
+const L_ = Object.fromEntries(LINES.map(l => [l.id, l]));
+const STORES = [
+  { id: 's1', name: 'BOUTIQUE CARÍSSIMA', wall: ['#ddd6cc', '#cbc2b6'], floor: '#a89e92', plaque: ['#1d1d1f', '#cfc7b8'], tag: ['BATOM', 'R$ 89,90'] },
+  { id: 's2', name: 'CHIQUE DEMAIS', wall: ['#e2d3d6', '#cdb9bd'], floor: '#9c8a8e', plaque: ['#3b1d2a', '#e8cfd6'], tag: ['BRINCO', 'R$ 59,90'] },
+  { id: 's3', name: 'SÓ PRA RICA', wall: ['#cfd6dc', '#b9c2ca'], floor: '#8f99a3', plaque: ['#14213d', '#d6dde6'], tag: ['SKINCARE', 'R$ 149,90'] },
+];
+
+function buildStore(st) {
+  const d = document.createElement('div');
+  d.className = 'scene store'; d.id = st.id;
+  d.style.background = `linear-gradient(180deg, ${st.wall[0]}, ${st.wall[1]})`;
+  let h = `<div class="plaque" style="background:${st.plaque[0]};color:${st.plaque[1]}">${st.name}</div>
+    <div class="shelf" style="top:520px"></div><div class="shelf" style="top:800px"></div><div class="floor" style="background:${st.floor}"></div>`;
+  const cols = ['#8c1d2a', '#2e2e33', '#d8c3a5', '#b23a48', '#3b3b3b', '#c9a77c'];
+  for (let i = 0; i < 12; i++) {
+    const top = i < 6 ? 520 : 800, x = 110 + (i % 6) * 150 + (i * 13) % 30, w = 40 + (i * 17) % 40, hh = 70 + (i * 29) % 70;
+    h += `<div class="prod" style="left:${x}px;top:${top - hh}px;width:${w}px;height:${hh}px;background:${cols[(i + st.id.length) % cols.length]}"></div>`;
+  }
+  d.innerHTML = h + '<div class="gloom"></div>';
+  d.style.filter = 'saturate(.75)';
+  $('scenes').appendChild(d);
+}
+function buildFront(logo) {
+  const d = document.createElement('div'); d.className = 'scene bluum'; d.id = 'front';
+  d.innerHTML = `<div style="position:absolute;left:0;right:0;top:1190px;bottom:0;background:#5bb3aa"></div>
+    <div style="position:absolute;left:170px;width:740px;top:560px;height:640px;background:#fff;border:10px solid #0d4c46"></div>
+    <div style="position:absolute;left:200px;width:330px;top:590px;height:600px;background:linear-gradient(160deg,#e9fbf8,#bfe9e3);border:6px solid #0d4c46"></div>
+    <div style="position:absolute;left:550px;width:330px;top:590px;height:600px;background:linear-gradient(200deg,#e9fbf8,#bfe9e3);border:6px solid #0d4c46"></div>
+    <img src="${logo.lotus.url}" style="position:absolute;left:440px;width:200px;top:180px">
+    <img src="${logo.word.url}" style="position:absolute;left:150px;width:780px;top:360px">`;
+  $('scenes').appendChild(d);
+}
+function buildInside() {
+  const d = document.createElement('div'); d.className = 'scene bluum'; d.id = 'inside';
+  let h = '';
+  for (let y = 300; y < 1190; y += 46) h += `<div class="slat" style="top:${y}px"></div>`;
+  const cols = ['#e2557a', '#f2c94c', '#ffffff', '#c24a6e', '#8fd3cb', '#f08a6c', '#fbe39a'];
+  for (let i = 0; i < 26; i++) {
+    const x = 60 + (i % 13) * 76, y = i < 13 ? 860 : 1030, hh = 40 + ((i * 37) % 50);
+    h += `<div style="position:absolute;left:${x}px;top:${y - hh}px;width:44px;height:${hh}px;background:${cols[i % cols.length]};border-radius:8px 8px 3px 3px;box-shadow:0 4px 0 rgba(13,76,70,.15)"></div>`;
+  }
+  h += `<div style="position:absolute;left:40px;right:40px;top:866px;height:16px;background:#fff"></div><div style="position:absolute;left:40px;right:40px;top:1036px;height:16px;background:#fff"></div>
+    <div style="position:absolute;left:0;right:0;top:1190px;bottom:0;background:#e9f6f4"></div>`;
+  d.innerHTML = h;
+  $('scenes').appendChild(d);
+}
+function buildFim() { const d = document.createElement('div'); d.className = 'scene bluum'; d.id = 'fim'; $('scenes').appendChild(d); }
+
+const EL = {};
+function mk(id, html, cls = 'a') { const d = document.createElement('div'); d.className = cls; d.innerHTML = html; cam.insertBefore(d, $('dust')); EL[id] = d; return d; }
+
+let T = {}, P, C, dust;
+window.FPS = FPS;
+window.ready = (async () => {
+  await Promise.all([document.fonts.load('900 100px Cinzel'), document.fonts.load('900 60px Montserrat'), document.fonts.load('800 40px Montserrat'), document.fonts.load('700 50px Cinzel')]);
+  const ac = new OfflineAudioContext(1, 44100, 44100);
+  let cur = 0;
+  for (const L of LINES) {
+    const buf = await ac.decodeAudioData(await (await fetch(`assets/voz/historia/${L.id}.mp3`)).arrayBuffer());
+    const d = buf.getChannelData(0), sr = buf.sampleRate, th = 0.0056;
+    let a = 0, b = d.length - 1;
+    while (a < d.length && Math.abs(d[a]) < th) a++;
+    while (b > a && Math.abs(d[b]) < th) b--;
+    const step = Math.round(sr / FPS), env = [];
+    for (let i = a; i < b; i += step) { let s = 0; for (let j = i; j < Math.min(b, i + step); j++) s += d[j] * d[j]; env.push(Math.sqrt(s / step)); }
+    const mx = Math.max(...env); L.env = env.map(v => Math.min(1, v / (mx * 0.75)));
+    L.t0 = cur + L.gap; L.t1 = L.t0 + (b - a) / sr; cur = L.t1;
+  }
+  const S = L_;
+  T = { s1: 0, s2: S.p2.t0 - 0.75, s3: S.p3.t0 - 0.75, front: S.n2.t0 - 0.35, inside: S.c1.t0 - 0.55, fim: S.n3.t0 - 0.4, end: S.n3.t1 + 1.6 };
+  T.compra = S.p4.t1 + 0.35; // montagem das compras (sem fala)
+  window.DURATION = Math.ceil(T.end * 10) / 10;
+  window.VOICES = LINES.map(L => [`assets/voz/historia/${L.id}.mp3`, L.t0, L.who === 'N' ? 1 : L.who === 'P' ? 3 : 2, false]);
+  window.AUDIO_SPEC = { bpm: 100, dur: window.DURATION, kick: 0.45, drums: [[T.front + 0.3, T.end - 1]], quietBar: -1, risers: [[T.s3 + 1.5, T.front]],
+    booms: [[T.front, 0.5], [S.p4.t0, 0.4], [T.fim, 0.4]],
+    whooshes: [T.s2 - 0.2, T.s3 - 0.2, T.inside - 0.2, T.fim - 0.2],
+    chimes: [[84, T.front + 0.1, 0.1], [89, T.front + 0.15, 0.07], [88, S.c1.t0 + 0.7 * (S.c1.t1 - S.c1.t0), 0.1],
+             [81, T.compra, 0.09], [84, T.compra + 0.5, 0.09], [88, T.compra + 1.0, 0.09], [93, T.compra + 1.5, 0.1], [96, S.p5.t0 + 0.2, 0.07], [77, T.fim + 0.3, 0.1]] };
+
+  const logo = await keyLogo();
+  STORES.forEach(buildStore); buildFront(logo); buildInside(); buildFim();
+  STORES.forEach(st => mk('tag' + st.id, `<div class="k">${st.tag[0]}</div><div class="v">${st.tag[1]}</div>`, 'a tag'));
+  mk('cloud', `<svg width="360" height="300" viewBox="-180 -110 360 300"><g fill="#8d99a6" stroke="#5c6672" stroke-width="6"><path d="M-130,10 C-170,10 -170,-50 -125,-52 C-120,-100 -50,-110 -30,-70 C-5,-110 70,-100 75,-55 C130,-70 160,0 115,12 Z"/></g>
+    <g id="rain" stroke="#7fb6e0" stroke-width="7" stroke-linecap="round">${[-100, -60, -20, 20, 60, 100].map((x, i) => `<line class="drop" x1="${x}" y1="30" x2="${x - 8}" y2="62" data-i="${i}"/>`).join('')}</g></svg>`);
+  mk('apartir', 'a partir de', 'a mont ink'); EL.apartir.style.cssText += 'font-size:52px;font-weight:600';
+  mk('preco', 'R$ 4,99', 'a goldx'); EL.preco.style.fontSize = '220px';
+  mk('lotusI', `<img src="${logo.lotus.url}" style="width:200px;display:block">`);
+  mk('wordI', `<img src="${logo.word.url}" style="width:700px;display:block">`);
+  mk('lotusF', `<img src="${logo.lotus.url}" style="width:280px;display:block">`);
+  mk('wordF', `<img src="${logo.word.url}" style="width:880px;display:block">`);
+  mk('tagF', `<img src="${logo.tag.url}" style="width:740px;display:block">`);
+  mk('dataF', 'SÁBADO · 07/11', 'a'); EL.dataF.style.cssText += "font:900 92px Cinzel,serif;color:#0d4c46";
+  mk('endF', 'Estrada de Águas Compridas, 392 · Olinda', 'a mont ink'); EL.endF.style.cssText += 'font-size:38px;font-weight:600';
+  mk('vemF', 'VEM AÍ!', 'a goldx'); EL.vemF.style.fontSize = '140px';
+  mk('uau', 'UAU!', 'a boom');
+  C = makeChar('C', $('chars')); P = makeChar('P', $('chars'));
+  dust = makeParticles($('dust'), { count: 50, seed: 5 });
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  render(0);
+  return true;
+})();
+
+const lineAt = t => LINES.find(L => t >= L.t0 && t < L.t1);
+const envAt = (L, t) => { if (!L) return 0; const i = (t - L.t0) * FPS, a = L.env[Math.floor(i)] || 0, b = L.env[Math.ceil(i)] || 0; return lerp(a, b, i % 1); };
+const show = (el, o) => { el.style.opacity = o; el.style.visibility = o <= 0.001 ? 'hidden' : 'visible'; };
+function slamIn(el, t, at, out, { x = 540, y = 960, r = 0, s0 = 2.2 } = {}) {
+  const k = p(t, at, at + 0.18), ko = out != null ? p(t, out, out + 0.18) : 0;
+  if (t < at || ko >= 1) { show(el, 0); return; }
+  place(el, { x, y: y - 40 * ko, r, s: lerp(s0, 1, eExpo(k)) * (1 - 0.2 * ko), o: Math.min(1, k * 3) * (1 - ko) });
+}
+function riseIn(el, t, at, y, x = 540, out = null) {
+  const k = eOut(p(t, at, at + 0.4)), ko = out != null ? p(t, out, out + 0.2) : 0;
+  if (t < at || ko >= 1) return show(el, 0);
+  place(el, { x, y: y + 30 * (1 - k), o: k * (1 - ko) });
+}
+
+function render(t) {
+  const S = L_, L = lineAt(t);
+  // cenas entram de baixo pra cima, em ordem
+  const order = [['s1', T.s1], ['s2', T.s2], ['s3', T.s3], ['front', T.front], ['inside', T.inside], ['fim', T.fim]];
+  order.forEach(([id, t0], i) => { const k = i ? eOut(p(t, t0, t0 + 0.3)) : 1; $(id).style.clipPath = `inset(${100 * (1 - k)}% 0 0 0)`; $(id).style.visibility = k > 0 ? 'visible' : 'hidden'; });
+  const scene = [...order].reverse().find(([, t0]) => t >= t0)[0];
+
+  // câmera: zoom lento nas lojas (tristeza), soco no "R$ 4,99?!"
+  let z = 1 + 0.03 * Math.sin(t * 0.5);
+  if (['s1', 's2', 's3'].includes(scene)) z = 1.02 + 0.04 * p(t, T[scene], T[scene] + 3);
+  if (t >= S.p4.t0) z += 0.14 * Math.exp(-(t - S.p4.t0) * 4);
+  cam.style.transform = `scale(${z})`;
+
+  // etiquetas das lojas caras
+  STORES.forEach((st, i) => {
+    const line = [S.p1, S.p2, S.p3][i];
+    slamIn(EL['tag' + st.id], t, line.t0 - 0.15, (i < 2 ? [T.s2, T.s3][i] : T.front) - 0.1, { x: 690, y: 640, r: i % 2 ? -5 : 5 });
+  });
+  // nuvem de chuva na 3ª loja
+  if (scene === 's3' && t > S.p3.t0 - 0.4) {
+    const k = eOut(p(t, S.p3.t0 - 0.4, S.p3.t0));
+    place(EL.cloud, { x: 390, y: 930 + 14 * Math.sin(t * 2), o: k });
+    EL.cloud.querySelectorAll('.drop').forEach((d, i) => d.setAttribute('transform', `translate(0,${(t * 220 + i * 37) % 110})`));
+  } else show(EL.cloud, 0);
+
+  // dentro da Bluum: logo + preço
+  if (scene === 'inside') {
+    riseIn(EL.lotusI, t, T.inside + 0.25, 200); riseIn(EL.wordI, t, T.inside + 0.4, 350);
+    const kp = S.c1.t0 + 0.68 * (S.c1.t1 - S.c1.t0);
+    riseIn(EL.apartir, t, kp - 0.4, 500);
+    slamIn(EL.preco, t, kp, null, { y: 650 });
+    EL.preco.style.backgroundPosition = `${lerp(120, -20, p(t, kp + 0.2, kp + 1))}% 0, 0 0`;
+    slamIn(EL.uau, t, S.p5.t0, S.p5.t1 + 0.2, { x: 830, y: 860, r: 8 });
+  } else ['lotusI', 'wordI', 'apartir', 'preco', 'uau'].forEach(k => show(EL[k], 0));
+  if (scene === 'fim') {
+    riseIn(EL.lotusF, t, T.fim + 0.3, 230); riseIn(EL.wordF, t, T.fim + 0.45, 440); riseIn(EL.tagF, t, T.fim + 0.6, 560);
+    slamIn(EL.dataF, t, S.n3.t0 + 1.2, null, { y: 720 }); riseIn(EL.endF, t, S.n3.t0 + 2.2, 820);
+    slamIn(EL.vemF, t, S.n3.t1 - 1.0, null, { y: 1000 });
+    EL.vemF.style.backgroundPosition = `${lerp(120, -20, p(t, S.n3.t1 - 0.8, S.n3.t1))}% 0, 0 0`;
+  } else ['lotusF', 'wordF', 'tagF', 'dataF', 'endF', 'vemF'].forEach(k => show(EL[k], 0));
+  $('dust').style.opacity = ['front', 'inside', 'fim'].includes(scene) ? 1 : 0;
+  dust(t, [[T.front + 0.15, 540, 700], [T.compra + 0.4, 420, 1100], [S.p5.t0 + 0.1, 420, 1100], [T.fim + 0.4, 540, 420]]);
+
+  // --- pitanga ---
+  const st = T[scene], pTalk = L && L.who === 'P', env = pTalk ? envAt(L, t) : 0;
+  let x = 420, y = 1180, walk = 0, emo = 'triste', pose = 'baixo', tears = 0, glow = 0, s = 1.12;
+  if (['s1', 's2', 's3'].includes(scene)) {
+    const kw = p(t, st + 0.05, st + 1.2); x = lerp(-180, 380, eOut(kw)); walk = kw < 1 ? 1 : 0; pose = walk ? 'anda' : 'baixo';
+    tears = scene === 's3' ? 1 : scene === 's2' ? 0.6 : 0;
+  } else if (scene === 'front') {
+    const kw = p(t, st + 0.05, st + 1.0); x = lerp(-180, 330, eOut(kw)); walk = kw < 1 ? 1 : 0; emo = t > S.n2.t0 + 0.6 ? 'surpresa' : 'triste'; pose = walk ? 'anda' : 'baixo';
+  } else if (scene === 'inside') {
+    x = 360; emo = t < S.p4.t0 ? (t < S.c1.t0 + 1.2 ? 'surpresa' : 'duvida') : 'brilho'; pose = t < S.p4.t0 ? 'baixo' : 'alto';
+    if (t >= T.compra) pose = 'sacolas';
+    if (t >= S.p5.t0) pose = 'alto';
+    glow = p(t, T.compra + 1.6, T.compra + 2.2);
+  } else { x = 360; y = 1320; s = 0.92; emo = 'feliz'; pose = 'sacolas'; glow = 0.5; }
+  const ac = scene === 'inside' ? { bags: p(t, T.compra, T.compra + 0.4), bow: p(t, T.compra + 0.5, T.compra + 0.9), ear: p(t, T.compra + 1.0, T.compra + 1.4), lips: p(t, T.compra + 1.5, T.compra + 1.6) }
+           : scene === 'fim' ? { bags: 1, bow: 1, ear: 1, lips: 1 } : {};
+  if (scene === 'inside' && t >= S.p5.t0) ac.bags = 1;
+  if (pose === 'alto' && ac.bags >= 1 && t >= S.p5.t0) pose = 'alto';
+  drawChar(P, t, { x, y, s, emo, env, talking: pTalk, pose, walk, tears, glow, acc: ac, look: 1 });
+
+  // --- caju (vendedor da Bluum) ---
+  const cIn = scene === 'inside' || scene === 'fim';
+  const cTalk = L && L.who === 'C';
+  if (cIn) {
+    C.svg.style.display = '';
+    drawChar(C, t, { x: scene === 'fim' ? 740 : 770, y: scene === 'fim' ? 1326 : 1186, s: scene === 'fim' ? 0.92 : 1.12, emo: 'feliz', env: cTalk ? envAt(L, t) : 0, talking: cTalk, pose: cTalk ? 'fala' : scene === 'fim' ? 'tchau' : 'baixo', look: -1 });
+  } else C.svg.style.display = 'none';
+
+  // --- legenda estilo viral ---
+  const cap = $('cap');
+  const CL = L || [...LINES].reverse().find(x => t >= x.t1 && t < x.t1 + 0.35);
+  if (!CL) { cap.innerHTML = ''; return; }
+  const words = CL.cap.split(' '), tot = words.reduce((a, w) => a + w.length + 1, 0);
+  let acc = 0; const k = p(t, CL.t0, CL.t1) * tot;
+  cap.className = CL.who === 'N' ? 'narr' : '';
+  const label = CL.who === 'N' ? '' : `<span class="who" style="color:${CL.who === 'P' ? '#ff8a6a' : '#ffd23f'}">${CL.who === 'P' ? 'PITANGA' : 'CAJU · BLUUM'}</span>`;
+  cap.innerHTML = label + words.map(w => { const a = acc; acc += w.length + 1; return `<span class="${k >= a && k < acc ? 'on' : ''}" style="opacity:${k >= a - 0.5 || t >= CL.t1 ? 1 : 0}">${w}</span>`; }).join(' ');
+}
+window.render = render;
+</script>
+<script src="audio.js"></script>
+</body>
+</html>

@@ -34,7 +34,7 @@ const pageArg = args.includes('--page') ? args[args.indexOf('--page') + 1] : 'in
 const outArg = args.includes('--out') ? args[args.indexOf('--out') + 1] : 'bluum-meta-9x16.mp4';
 
 // http local: em file:// o canvas fica "tainted" e não dá para recortar o logo
-const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png' };
+const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg', '.png': 'image/png', '.mp3': 'audio/mpeg' };
 const server = createServer((req, res) => {
   const p = normalize(join(here, decodeURIComponent(req.url.split('?')[0]) === '/' ? 'index.html' : decodeURIComponent(req.url.split('?')[0])));
   if (!p.startsWith(here) || !existsSync(p)) { res.writeHead(404); return res.end(); }
