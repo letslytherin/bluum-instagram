@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>Bluum · VEM AÍ</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@600&family=Montserrat:wght@500;600;700&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:wght@600&family=Montserrat:wght@500;600;700&display=block" rel="stylesheet">
 <link href="brand.css" rel="stylesheet">
 <style>
   html, body, #stage { width: 1080px; height: 1920px; }
@@ -14,17 +14,19 @@
   #card { position: absolute; inset: 0; background: var(--fundo); }
   #dust { position: absolute; inset: 0; }
   #flash { position: absolute; inset: 0; background: #fff8e6; pointer-events: none; }
-  /* ouro do nome no logo: mais metal, mais brilho, com o mesmo Cinzel do BLUUM */
+  /* fonte e ouro do logo oficial: letras romanas com serifa (Cinzel, a gratuita mais perto do BLUUM), peso médio, ouro polido */
   .goldx {
-    font-family: 'Cinzel', serif; font-weight: 900; letter-spacing: .02em;
-    background-image: linear-gradient(100deg, transparent 38%, rgba(255,255,240,.95) 50%, transparent 62%),
-      linear-gradient(180deg, #fff1b0 0%, #f2cd5b 20%, #c88f1a 46%, #8a5a07 56%, #d9a93d 76%, #fbe39a 100%);
+    font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: .03em;
+    background-image: linear-gradient(100deg, transparent 38%, rgba(255,255,235,.9) 50%, transparent 62%),
+      linear-gradient(180deg, #fff6c4 0%, #ffe066 16%, #f5bf1f 34%, #c98a06 50%, #8f5a02 58%, #d9a21c 72%, #ffd84a 88%, #fff0a8 100%);
     background-size: 260% 100%, 100% 100%; background-repeat: no-repeat;
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .blk { background: var(--fundo); color: var(--tinta); font: 700 60px/1.22 Montserrat, sans-serif; padding: 16px 30px 18px; white-space: normal; text-align: center; max-width: 940px; }
-  .lbl { font: 600 40px Montserrat, sans-serif; letter-spacing: .32em; color: var(--tinta); }
-  .ink9 { font-family: 'Cinzel', serif; font-weight: 900; color: var(--tinta); }
+  .blk { background: var(--fundo); color: var(--tinta); font: 700 56px/1.24 'Cinzel', serif; letter-spacing: .01em; padding: 18px 34px 20px; white-space: normal; text-align: center; max-width: 940px; }
+  .lbl { font: 700 40px 'Cinzel', serif; letter-spacing: .32em; color: var(--tinta); }
+  .ink9 { font-family: 'Cinzel', serif; font-weight: 800; color: var(--tinta); }
+  /* tudo na fonte do logo: nada de Montserrat ou Cormorant nesta peça */
+  .mont, .corm { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: .02em; }
 </style>
 </head>
 <body>
@@ -43,8 +45,8 @@
 // Batida a 128 BPM: cada corte cai numa batida (B = 0,46875 s).
 const B = 60 / 128;
 const ADDR = 'Estrada de Águas Compridas, 392';
-const GOLD_SH = 'drop-shadow(0 3px 0 #6b4504) drop-shadow(0 12px 22px rgba(0,30,28,.5))';
-const GOLD_SH_CARD = 'drop-shadow(0 3px 0 #7a5208) drop-shadow(0 10px 16px rgba(0,70,64,.3))';
+const GOLD_SH = 'drop-shadow(0 0 1.5px #5a3602) drop-shadow(0 4px 0 #5a3602) drop-shadow(0 12px 22px rgba(0,30,28,.5))';
+const GOLD_SH_CARD = 'drop-shadow(0 0 1.5px #6b4504) drop-shadow(0 4px 0 #6b4504) drop-shadow(0 10px 16px rgba(0,70,64,.3))';
 
 const clip = (name, t0, t1) => ({ kind: 'clip', name, t0, t1 });
 const photo = (src, t0, t1, pos = '50% 50%') => ({ kind: 'photo', src, t0, t1, pos });
@@ -88,7 +90,7 @@ const VARIANTS = {
     card: 16 * B,
     els: [
       ...hook('VEM', 'AÍ'),
-      X('A Bluum tá ficando pronta', 'blk', 62, 1240, 4 * B + 0.08, 10 * B - 0.05, 'block'),
+      X('A Bluum tá | ficando pronta', 'blk', 62, 1240, 4 * B + 0.08, 10 * B - 0.05, 'block'),
       X('vitrine montada, | prateleiras no lugar', 'blk', 62, 1240, 10 * B + 0.08, 16 * B - 0.05, 'block'),
       X('INAUGURAÇÃO', 'lbl', 40, 540, 16 * B + 0.1, 23.5 * B),
       X('SÁBADO', 'ink9', 150, 700, 17 * B, 23.5 * B, 'pop'),
@@ -110,10 +112,10 @@ const VARIANTS = {
              whooshes: [6, 8, 10, 12, 14, 16].map(k => k * B - 0.25).concat([23.6 * B]),
              chimes: [[84, 18 * B, 0.1], [89, 18 * B + 0.03, 0.06], [77, 24 * B, 0.12], [84, 24 * B + 0.05, 0.09], [89, 24 * B + 0.1, 0.06], [81, 26 * B + 0.1, 0.05]] },
   },
-  s3: story({ frase: 'A Bluum tá ficando pronta', card: FALTAM('3'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/faltam-3.mp3' }),
-  s2: story({ frase: 'A Bluum tá quase pronta', card: FALTAM('2'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/faltam-2.mp3' }),
-  amanha: story({ frase: 'Últimos detalhes pra você', card: PALAVRA('É', 'AMANHÃ'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/fecho-amanha.mp3' }),
-  hoje: story({ hookA: 'É', hookB: 'HOJE', frase: 'Abrimos hoje em Olinda', card: PALAVRA('É', 'HOJE'), voz: 'assets/voz/e-hoje.mp3', vozFim: 'assets/voz/fecho-hoje.mp3' }),
+  s3: story({ frase: 'A Bluum tá | ficando pronta', card: FALTAM('3'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/faltam-3.mp3' }),
+  s2: story({ frase: 'A Bluum tá | quase pronta', card: FALTAM('2'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/faltam-2.mp3' }),
+  amanha: story({ frase: 'Últimos detalhes | pra você', card: PALAVRA('É', 'AMANHÃ'), voz: 'assets/voz/vem-ai.mp3', vozFim: 'assets/voz/fecho-amanha.mp3' }),
+  hoje: story({ hookA: 'É', hookB: 'HOJE', frase: 'Abrimos hoje | em Olinda', card: PALAVRA('É', 'HOJE'), voz: 'assets/voz/e-hoje.mp3', vozFim: 'assets/voz/fecho-hoje.mp3' }),
 };
 for (const k of ['s3', 's2', 'amanha', 'hoje']) VARIANTS[k].flashes = [0.12, 4 * B, VARIANTS[k].card];
 
@@ -142,6 +144,7 @@ function build(logo) {
       el.innerHTML = spec.anim === 'block' ? spec.html.split(' ').map(w => w === '|' ? '<br>' : `<span style="display:inline-block">${w}</span>`).join(' ') : spec.html;
     }
     cam.appendChild(el);
+    if (!spec.type && spec.anim !== 'block') { let fs = spec.size; el.style.whiteSpace = 'nowrap'; while (el.offsetWidth > 980 && fs > 20) { fs -= 2; el.style.fontSize = fs + 'px'; } }
     return { spec, el, words: [...el.querySelectorAll('span')] };
   });
   dust = makeParticles($('dust'), { count: 60, seed: 11 });
@@ -233,8 +236,7 @@ async function render(t) {
 
 window.render = render;
 window.ready = (async () => {
-  await Promise.all([document.fonts.load('900 100px Cinzel'), document.fonts.load('700 100px Cinzel'), document.fonts.load('600 100px "Cormorant Garamond"'),
-                     document.fonts.load('600 40px Montserrat'), document.fonts.load('700 40px Montserrat')]);
+  await Promise.all([document.fonts.load('800 100px Cinzel'), document.fonts.load('700 100px Cinzel'), document.fonts.load('600 100px Cinzel')]);
   build(await keyLogo());
   await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
   await render(0);
