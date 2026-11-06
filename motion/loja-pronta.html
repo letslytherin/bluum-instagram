@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Bluum · loja pronta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=block" rel="stylesheet">
+<link href="brand.css" rel="stylesheet">
+<style>
+  html, body, #stage { width: 1080px; height: 1920px; }
+  #fimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 50%; }
+  #topfade { position: absolute; left: 0; right: 0; top: 0; height: 520px; background: linear-gradient(180deg, rgba(5,40,37,.45), transparent); }
+  #botfade { position: absolute; left: 0; right: 0; bottom: 0; height: 900px; background: linear-gradient(0deg, rgba(5,40,37,.5) 30%, rgba(5,40,37,.45) 55%, transparent); }
+  .blk { background: var(--fundo); color: var(--tinta); font: 700 62px/1.22 'Cinzel', serif; padding: 20px 38px 22px; text-align: center; white-space: nowrap;
+         box-shadow: 0 10px 30px rgba(0,40,36,.28); }
+  .goldx { font-family: 'Cinzel', serif; font-weight: 700; letter-spacing: .03em;
+    background-image: linear-gradient(180deg, #fff6c4 0%, #ffe066 16%, #f5bf1f 34%, #c98a06 50%, #8f5a02 58%, #d9a21c 72%, #ffd84a 88%, #fff0a8 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; padding: .06em .1em; }
+  .wht { font-family: 'Cinzel', serif; font-weight: 700; color: #fff; letter-spacing: .06em; text-shadow: 0 2px 10px rgba(0,30,28,.7); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="fimg" alt="">
+  <div id="topfade"></div>
+  <div id="botfade"></div>
+</div>
+<script src="brand.js"></script>
+<script>
+// Um vídeo só com a loja pronta (6 filmagens do WhatsApp de 06/11). Sem trilha: a música é escolhida no Instagram.
+// Cada plano: [filmagem, quadro inicial, quadros, frase]
+const SHOTS = [
+  [1, 0, 72, 'Nécessaires, pó | e paletas'],
+  [2, 40, 72, 'Esponjas fofas | e skincare'],
+  [3, 60, 72, 'O balcão | já tá cheio'],
+  [4, 90, 72, 'Hidratante labial | e muito mais'],
+  [5, 30, 72, 'Base, batom | e cabelo'],
+  [6, 40, 90, 'Pele e cabelo | no capricho'],
+];
+let acc = 0; for (const s of SHOTS) { s.t0 = acc / 30; acc += s[2]; s.t1 = acc / 30; }
+window.FPS = 30; window.DURATION = acc / 30; window.VOICES = [];
+const GOLD_SH = 'drop-shadow(0 0 1.5px #5a3602) drop-shadow(0 4px 0 #5a3602) drop-shadow(0 10px 18px rgba(0,30,28,.55))';
+
+const $ = id => document.getElementById(id);
+const stage = $('stage'), fimg = $('fimg');
+let els = {};
+
+function mk(cls, html, size, extra = {}) {
+  const el = document.createElement('div');
+  el.className = 'a ' + cls; el.innerHTML = html; el.style.fontSize = size + 'px';
+  Object.assign(el.style, extra); stage.appendChild(el);
+  let fs = size; while (el.offsetWidth > 990 && fs > 20) { fs -= 2; el.style.fontSize = fs + 'px'; }
+  return el;
+}
+
+function build(logo) {
+  els.frases = SHOTS.map(s => {
+    const el = mk('blk', s[3].split(' ').map(w => w === '|' ? '<br>' : `<span style="display:inline-block">${w}</span>`).join(' '), 62);
+    return { el, words: [...el.querySelectorAll('span')], s };
+  });
+  els.lotus = document.createElement('img'); els.lotus.src = logo.lotus.url; els.lotus.className = 'a'; els.lotus.style.width = '150px';
+  els.lotus.dataset.filter = 'drop-shadow(0 6px 12px rgba(0,30,28,.5))'; stage.appendChild(els.lotus);
+  els.inaug = mk('wht', 'INAUGURAÇÃO', 36, { letterSpacing: '.3em' });
+  els.data = mk('goldx', 'SÁBADO · 07/11', 104); els.data.dataset.filter = GOLD_SH;
+  els.end = mk('wht', 'Estrada de Águas Compridas, 392 · Olinda', 34);
+  els.at = mk('wht', '@lojabluum', 38);
+}
+
+let last = '';
+async function render(t) {
+  const sh = SHOTS.find(s => t < s.t1) || SHOTS[SHOTS.length - 1];
+  const local = t - sh.t0;
+  const f = sh[1] + Math.min(Math.floor(local * 30), sh[2] - 1) + 1;
+  const src = `footage/solo${sh[0]}/${String(f).padStart(4, '0')}.jpg`;
+  if (src !== last) { fimg.src = src; last = src; await fimg.decode().catch(() => {}); }
+  // soquinho de zoom em cada corte + leve aproximação
+  fimg.style.transform = `scale(${lerp(1.1, 1.03, eOut(p(local, 0, 0.3))) + 0.02 * p(local, 0, sh.t1 - sh.t0)})`;
+
+  // frase do plano: faixa turquesa abre, palavras sobem, e some antes do corte
+  for (const { el, words, s } of els.frases) {
+    if (s !== sh) { el.style.visibility = 'hidden'; continue; }
+    const a = s === SHOTS[0] ? 0.15 : 0.05;
+    const k = eOut(p(local, a, a + 0.25)), ko = p(local, s.t1 - s.t0 - 0.15, s.t1 - s.t0);
+    place(el, { y: 300, o: s === SHOTS[SHOTS.length - 1] ? 1 : 1 - ko });
+    el.style.clipPath = `inset(0 ${100 * (1 - k)}% 0 0)`;
+    words.forEach((w, i) => { const kw = eOut(p(local, a + 0.1 + i * 0.06, a + 0.38 + i * 0.06)); w.style.transform = `translateY(${22 * (1 - kw)}px)`; w.style.opacity = kw; });
+  }
+
+  // assinatura embaixo
+  const kl = p(t, 0.6, 1.0);
+  place(els.lotus, { y: 1230 + 24 * (1 - eOut(kl)), s: lerp(0.7, 1, eBack(kl)), o: eOut(Math.min(1, kl * 2)) });
+  const rise = (el, y, a) => { const kk = eOut(p(t, a, a + 0.45)); place(el, { y: y + 26 * (1 - kk), o: kk }); };
+  rise(els.inaug, 1335, 0.8);
+  const kd = p(t, 0.95, 1.15);
+  place(els.data, { y: 1418, s: lerp(1.6, 1, eExpo(kd)), o: Math.min(1, kd * 3), blur: 8 * (1 - kd) });
+  rise(els.end, 1512, 1.25);
+  rise(els.at, 1574, 1.4);
+}
+
+// sem trilha: devolve um wav mudo do tamanho do vídeo (a música entra no Instagram)
+window.renderAudio = async () => {
+  const sr = 44100, n = Math.ceil(window.DURATION * sr), b = new ArrayBuffer(44 + n * 2), v = new DataView(b);
+  const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 2, true);
+  let s = ''; const u = new Uint8Array(b); for (let i = 0; i < u.length; i += 8192) s += String.fromCharCode(...u.subarray(i, i + 8192));
+  return btoa(s);
+};
+window.render = render;
+window.ready = (async () => {
+  await Promise.all([document.fonts.load('700 100px Cinzel'), document.fonts.load('800 100px Cinzel')]);
+  build(await keyLogo());
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  await render(0);
+  return true;
+})();
+</script>
+</body>
+</html>
