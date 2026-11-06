@@ -20,28 +20,30 @@
 </head>
 <body>
 <div id="stage">
-  <img id="fimg" alt="">
+  <canvas id="fcv" width="1080" height="1920" style="position:absolute;inset:0"></canvas>
   <div id="topfade"></div>
   <div id="botfade"></div>
 </div>
 <script src="brand.js"></script>
 <script>
 // Um vídeo só com a loja pronta (6 filmagens do WhatsApp de 06/11). Sem trilha: a música é escolhida no Instagram.
-// Cada plano: [filmagem, quadro inicial, quadros, frase]
+// Ritmo calmo (feedback de 06/11: "meio acelerado"): planos de 3,6 s, câmera a 70% da velocidade
+// com quadros mesclados, e fusão de 0,5 s entre um plano e outro.
+// Cada plano: [filmagem, quadro inicial, segundos na tela, frase]
+const SPEED = 0.8, XF = 0.5;
+// filmagens novas de 06/11 (WA0042, WA0044, WA0046). novo1 começa no quadro 100 para não mostrar o reflexo de uma pessoa no vidro.
 const SHOTS = [
-  [1, 0, 72, 'Nécessaires, pó | e paletas'],
-  [2, 40, 72, 'Esponjas fofas | e skincare'],
-  [3, 60, 72, 'O balcão | já tá cheio'],
-  [4, 90, 72, 'Hidratante labial | e muito mais'],
-  [5, 30, 72, 'Base, batom | e cabelo'],
-  [6, 40, 90, 'Pele e cabelo | no capricho'],
+  ['novo1', 100, 5.5, 'Cabelo e | body splash'],
+  ['novo1', 330, 5.5, 'Cuidados | pra pele'],
+  ['novo2', 30, 6, 'Acessórios, colares | e brincos'],
+  ['novo3', 15, 6, 'Hidratantes | e muito mais'],
 ];
-let acc = 0; for (const s of SHOTS) { s.t0 = acc / 30; acc += s[2]; s.t1 = acc / 30; }
-window.FPS = 30; window.DURATION = acc / 30; window.VOICES = [];
+let acc = 0; SHOTS.forEach((s, i) => { s.t0 = acc; s.t1 = acc + s[2]; acc = s.t1 - (i < SHOTS.length - 1 ? XF : 0); });
+window.FPS = 30; window.DURATION = acc; window.VOICES = [];
 const GOLD_SH = 'drop-shadow(0 0 1.5px #5a3602) drop-shadow(0 4px 0 #5a3602) drop-shadow(0 10px 18px rgba(0,30,28,.55))';
 
 const $ = id => document.getElementById(id);
-const stage = $('stage'), fimg = $('fimg');
+const stage = $('stage'), cv = $('fcv'), ctx = cv.getContext('2d');
 let els = {};
 
 function mk(cls, html, size, extra = {}) {
@@ -65,35 +67,45 @@ function build(logo) {
   els.at = mk('wht', '@lojabluum', 38);
 }
 
-let last = '';
+const cache = new Map();
+async function img(c, n) {
+  const k = c + ':' + n; if (cache.has(k)) return cache.get(k);
+  const im = new Image(); im.src = `footage/${c}/${String(n).padStart(4, '0')}.jpg`; await im.decode().catch(() => {});
+  cache.set(k, im); if (cache.size > 40) cache.delete(cache.keys().next().value); return im;
+}
+async function drawShot(s, t, alpha) {
+  const local = t - s.t0, x = s[1] + local * 30 * SPEED, n = Math.floor(x), fr = x - n;
+  const z = 1.03 + 0.05 * p(local, 0, s[2]);            // aproximação lenta, sem soco
+  ctx.save(); ctx.translate(540, 960); ctx.scale(z, z); ctx.translate(-540, -960);
+  ctx.globalAlpha = alpha; ctx.drawImage(await img(s[0], n + 1), 0, 0, 1080, 1920);
+  if (fr > 0.02) { ctx.globalAlpha = alpha * fr; ctx.drawImage(await img(s[0], n + 2), 0, 0, 1080, 1920); }
+  ctx.restore();
+}
 async function render(t) {
-  const sh = SHOTS.find(s => t < s.t1) || SHOTS[SHOTS.length - 1];
-  const local = t - sh.t0;
-  const f = sh[1] + Math.min(Math.floor(local * 30), sh[2] - 1) + 1;
-  const src = `footage/solo${sh[0]}/${String(f).padStart(4, '0')}.jpg`;
-  if (src !== last) { fimg.src = src; last = src; await fimg.decode().catch(() => {}); }
-  // soquinho de zoom em cada corte + leve aproximação
-  fimg.style.transform = `scale(${lerp(1.1, 1.03, eOut(p(local, 0, 0.3))) + 0.02 * p(local, 0, sh.t1 - sh.t0)})`;
+  const on = SHOTS.filter(s => t >= s.t0 && t < s.t1);
+  if (!on.length) on.push(SHOTS[SHOTS.length - 1]);
+  await drawShot(on[0], t, 1);
+  if (on[1]) await drawShot(on[1], t, eInOut(p(t, on[1].t0, on[1].t0 + XF)));
+  const sh = on[on.length - 1];
 
   // frase do plano: faixa turquesa abre, palavras sobem, e some antes do corte
   for (const { el, words, s } of els.frases) {
-    if (s !== sh) { el.style.visibility = 'hidden'; continue; }
-    const a = s === SHOTS[0] ? 0.15 : 0.05;
-    const k = eOut(p(local, a, a + 0.25)), ko = p(local, s.t1 - s.t0 - 0.15, s.t1 - s.t0);
-    place(el, { y: 300, o: s === SHOTS[SHOTS.length - 1] ? 1 : 1 - ko });
-    el.style.clipPath = `inset(0 ${100 * (1 - k)}% 0 0)`;
-    words.forEach((w, i) => { const kw = eOut(p(local, a + 0.1 + i * 0.06, a + 0.38 + i * 0.06)); w.style.transform = `translateY(${22 * (1 - kw)}px)`; w.style.opacity = kw; });
+    const local = t - s.t0, len = s[2], last = s === SHOTS[SHOTS.length - 1];
+    if (local < 0 || local >= len) { el.style.visibility = 'hidden'; continue; }
+    const a = s === SHOTS[0] ? 0.3 : XF * 0.6;
+    const k = eInOut(p(local, a, a + 0.6)), ko = last ? 0 : eInOut(p(local, len - XF - 0.45, len - XF + 0.05));
+    place(el, { y: 300 + 14 * (1 - k), o: k * (1 - ko) });
+    el.style.clipPath = 'none';
+    words.forEach(w => { w.style.transform = 'none'; w.style.opacity = 1; });
   }
 
   // assinatura embaixo
-  const kl = p(t, 0.6, 1.0);
-  place(els.lotus, { y: 1230 + 24 * (1 - eOut(kl)), s: lerp(0.7, 1, eBack(kl)), o: eOut(Math.min(1, kl * 2)) });
-  const rise = (el, y, a) => { const kk = eOut(p(t, a, a + 0.45)); place(el, { y: y + 26 * (1 - kk), o: kk }); };
-  rise(els.inaug, 1335, 0.8);
-  const kd = p(t, 0.95, 1.15);
-  place(els.data, { y: 1418, s: lerp(1.6, 1, eExpo(kd)), o: Math.min(1, kd * 3), blur: 8 * (1 - kd) });
-  rise(els.end, 1512, 1.25);
-  rise(els.at, 1574, 1.4);
+  const rise = (el, y, a) => { const kk = eInOut(p(t, a, a + 0.9)); place(el, { y: y + 18 * (1 - kk), o: kk }); };
+  rise(els.lotus, 1230, 0.9);
+  rise(els.inaug, 1335, 1.2);
+  rise(els.data, 1418, 1.4);
+  rise(els.end, 1512, 1.8);
+  rise(els.at, 1574, 2.0);
 }
 
 // sem trilha: devolve um wav mudo do tamanho do vídeo (a música entra no Instagram)
